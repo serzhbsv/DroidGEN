@@ -192,58 +192,33 @@ jobs:
           mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
         fi
 
-    - name: Fix headers and remove globals.c
+    - name: Fix headers and remove duplicate definitions
       run: |
-        # 1. Создаём новый config.h
-        cat > jni/../genplusgx/config.h << 'EOF'
-        #ifndef CONFIG_H
-        #define CONFIG_H
+        cd jni/../genplusgx
         
-        #include <stdint.h>
+        # 1. Удаляем определения типов из config.h (они уже есть в types.h)
+        sed -i '/typedef unsigned char uint8/d' config.h
+        sed -i '/typedef signed int int32/d' config.h
+        sed -i '/typedef signed short int16/d' config.h
         
-        typedef unsigned char uint8;
-        typedef signed int int32;
-        typedef signed short int16;
+        # 2. Добавляем #include <stdint.h> если его нет
+        if ! grep -q "#include <stdint.h>" config.h; then
+          sed -i '1i#include <stdint.h>' config.h
+        fi
         
-        typedef struct
-        {
-            uint8 device;
-            uint8 port;
-            uint8 padtype;
-            uint8 hq_fm;
-            uint8 psgBoostNoise;
-            int32 psg_preamp;
-            int32 fm_preamp;
-            uint8 filter;
-            int16 lp_range;
-            int16 low_freq;
-            int16 high_freq;
-            uint8 dac_bits;
-            uint8 region_detect;
-            uint8 force_dtack;
-            uint8 addr_error;
-            uint8 tmss;
-            uint8 bios_enabled;
-            uint8 lock_on;
-            uint8 hot_swap;
-        } t_config;
+        # 3. Исправляем membnk.h
+        sed -i 's/^} zbank_memory_map\[256\];/extern struct _zbank_memory_map zbank_memory_map[256];/' membnk.h
         
-        extern t_config config;
+        # 4. Исправляем m68k.h
+        sed -i 's/^_m68k_memory_map m68k_memory_map\[256\];/extern _m68k_memory_map m68k_memory_map[256];/' m68k/m68k.h
         
-        #endif
-        EOF
-        
-        # 2. Добавляем extern в m68k.h
-        sed -i 's/^_m68k_memory_map m68k_memory_map/extern _m68k_memory_map m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
-        
-        # 3. Добавляем extern в membnk.h
-        sed -i 's/^} zbank_memory_map/extern } zbank_memory_map/' jni/../genplusgx/membnk.h
-        
-        # 4. Удаляем globals.c
-        rm -f jni/../genplusgx/globals.c
-        
-        # 5. Удаляем globals.c из Android.mk
-        sed -i '/globals.c/d' jni/Android.mk
+        # 5. Проверяем результат
+        echo "=== config.h ==="
+        grep -E "typedef|include" config.h | head -10
+        echo "=== membnk.h ==="
+        grep "zbank_memory_map" membnk.h
+        echo "=== m68k.h ==="
+        grep "m68k_memory_map" m68k/m68k.h
 
     - name: Fix Android.mk with -w flag
       run: |
