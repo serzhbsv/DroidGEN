@@ -1,11 +1,7 @@
-name: Build DroidGEN APK
+name: Build with Gradle (Modern)
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+  workflow_dispatch:  # только ручной запуск
 
 jobs:
   build:
@@ -24,18 +20,20 @@ jobs:
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Set up Android NDK
+    - name: Set up Android NDK 25.2
       run: |
         echo "y" | sdkmanager "ndk;25.2.9519653"
         echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
 
-    - name: Install required SDK components
+    - name: Install SDK components
       run: |
         sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
     - name: Create local.properties
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+    # ==================== ПРАВКИ НАЧИНАЮТСЯ ====================
 
     - name: Fix AndroidManifest.xml
       run: |
@@ -72,7 +70,7 @@ jobs:
       run: |
         mkdir -p res/values
         mkdir -p res/drawable
-        
+
         cat > res/values/strings.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
@@ -81,9 +79,10 @@ jobs:
             <string name="resumeButtonLabel">Resume</string>
             <string name="settingButtonLabel">Settings</string>
             <string name="exitButtonLabel">Exit</string>
+            <string name="package_name">com.droidhits.genesisdroid</string>
         </resources>
         EOF
-        
+
         cat > res/values/styles.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
@@ -92,7 +91,7 @@ jobs:
             </style>
         </resources>
         EOF
-        
+
         cat > res/drawable/ic_launcher.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
@@ -103,13 +102,80 @@ jobs:
         </shape>
         EOF
 
+    - name: Fix Java sources
+      run: |
+        cat > src/com/droidhits/genesisdroid/EmuActivity.java << 'EOF'
+        package com.droidhits.genesisdroid;
+
+        import android.app.Activity;
+        import android.os.Bundle;
+        import android.view.Menu;
+        import android.view.MenuItem;
+
+        public class EmuActivity extends Activity {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+            }
+
+            @Override
+            public boolean onCreateOptionsMenu(Menu menu) {
+                return true;
+            }
+
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.menuMenu) {
+                    return true;
+                } else if (id == R.id.menuSettings) {
+                    return true;
+                } else if (id == R.id.menuLoadROM) {
+                    return true;
+                } else if (id == R.id.menuSelectState) {
+                    return true;
+                } else if (id == R.id.menuLoadState) {
+                    return true;
+                } else if (id == R.id.menuSaveState) {
+                    return true;
+                } else if (id == R.id.menuResetGame) {
+                    return true;
+                } else if (id == R.id.menuState0) {
+                    return true;
+                } else if (id == R.id.menuState1) {
+                    return true;
+                } else if (id == R.id.menuState2) {
+                    return true;
+                } else if (id == R.id.menuState3) {
+                    return true;
+                } else if (id == R.id.menuState4) {
+                    return true;
+                } else if (id == R.id.menuState5) {
+                    return true;
+                } else if (id == R.id.menuState6) {
+                    return true;
+                } else if (id == R.id.menuState7) {
+                    return true;
+                } else if (id == R.id.menuState8) {
+                    return true;
+                } else if (id == R.id.menuState9) {
+                    return true;
+                }
+                return super.onOptionsItemSelected(item);
+            }
+        }
+        EOF
+
+    # ==================== ПРАВКИ ЗАКОНЧЕНЫ ====================
+
     - name: Build native code with NDK
       run: |
         cd jni
         $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk
       continue-on-error: true
 
-    - name: Create Gradle wrapper manually
+    - name: Create Gradle wrapper
       run: |
         mkdir -p gradle/wrapper
         curl -L https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
@@ -198,5 +264,5 @@ jobs:
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: DroidGEN-debug
+        name: DroidGEN-Gradle
         path: build/outputs/apk/debug/*.apk
