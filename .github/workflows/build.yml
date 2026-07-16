@@ -38,6 +38,38 @@ jobs:
         echo "sdk.dir=$ANDROID_HOME" > local.properties
         echo "ndk.dir=$ANDROID_NDK_HOME" >> local.properties
 
+    - name: Fix AndroidManifest.xml
+      run: |
+        cat > AndroidManifest.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools">
+
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+            <application
+                android:icon="@drawable/ic_launcher"
+                android:label="@string/app_name"
+                android:theme="@style/Theme.DroidGEN"
+                android:allowBackup="true">
+
+                <activity
+                    android:name=".Main"
+                    android:label="@string/app_name"
+                    android:configChanges="orientation|keyboardHidden|screenSize"
+                    android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+
+            </application>
+
+        </manifest>
+        EOF
+
     - name: Build native code with NDK
       run: |
         cd jni
