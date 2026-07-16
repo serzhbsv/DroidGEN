@@ -1,7 +1,7 @@
 name: Build with Ant (Legacy)
 
 on:
-  workflow_dispatch:  # только ручной запуск
+  workflow_dispatch:
 
 jobs:
   build:
@@ -44,6 +44,55 @@ jobs:
       run: |
         mkdir -p libs/armeabi-v7a
         find . -name "*.so" -exec cp {} libs/armeabi-v7a/ \;
+
+    # ============ ДОБАВЛЯЕМ МИНИМАЛЬНЫЕ РЕСУРСЫ ДЛЯ ANT ============
+    
+    - name: Create minimal resources for Ant
+      run: |
+        # Создаём папки если их нет
+        mkdir -p res/values
+        mkdir -p res/drawable
+        
+        # Добавляем недостающие строки
+        cat >> res/values/strings.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <string name="app_name">DroidGEN</string>
+            <string name="loadRomButtonLabel">Load ROM</string>
+            <string name="resumeButtonLabel">Resume</string>
+            <string name="settingButtonLabel">Settings</string>
+            <string name="exitButtonLabel">Exit</string>
+            <string name="package_name">com.droidhits.genesisdroid</string>
+        </resources>
+        EOF
+        
+        # Создаём стили (если их нет)
+        cat >> res/values/styles.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <style name="Theme.DroidGEN" parent="android:Theme.Light.NoTitleBar">
+                <item name="android:windowBackground">@android:color/black</item>
+            </style>
+        </resources>
+        EOF
+        
+        # Создаём простую иконку
+        cat >> res/drawable/ic_launcher.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+            <solid android:color="#FF4444" />
+            <corners android:radius="8dp" />
+            <padding android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp" />
+        </shape>
+        EOF
+
+    - name: Fix MainActivity.java for Ant (remove R.string.package_name)
+      run: |
+        # Заменяем R.string.package_name на строку, если такой ресурс не найден
+        sed -i 's|getString(R.string.package_name)|"com.droidhits.genesisdroid"|g' src/com/droidhits/genesisdroid/MainActivity.java
+
+    # ============ КОНЕЦ ДОБАВЛЕННЫХ ПРАВОК ============
 
     - name: Update project for Ant
       run: |
