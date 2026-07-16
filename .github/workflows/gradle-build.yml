@@ -37,7 +37,7 @@ jobs:
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    # ============ ИСПРАВЛЕНИЕ 1: AndroidManifest.xml ============
+    # ============ AndroidManifest.xml ============
     - name: Fix AndroidManifest.xml
       run: |
         cat > AndroidManifest.xml << 'EOF'
@@ -69,7 +69,7 @@ jobs:
         </manifest>
         EOF
 
-    # ============ ИСПРАВЛЕНИЕ 2: Ресурсы ============
+    # ============ Ресурсы ============
     - name: Create missing resources
       run: |
         mkdir -p res/values
@@ -106,7 +106,7 @@ jobs:
         </shape>
         EOF
 
-    # ============ ИСПРАВЛЕНИЕ 3: Java-код (EmuActivity) ============
+    # ============ Java-код ============
     - name: Fix EmuActivity.java
       run: |
         cat > src/com/droidhits/genesisdroid/EmuActivity.java << 'EOF'
@@ -172,49 +172,85 @@ jobs:
         }
         EOF
 
-    # ============ ИСПРАВЛЕНИЕ 4: MainActivity.java (package_name) ============
     - name: Fix MainActivity.java
       run: |
         sed -i 's|getString(R.string.package_name)|"com.droidhits.genesisdroid"|g' src/com/droidhits/genesisdroid/MainActivity.java
 
-    # ============ ИСПРАВЛЕНИЕ 5: CLOCK_REALTIME_HR ============
+    # ============ Нативный код: CLOCK_REALTIME_HR ============
     - name: Fix CLOCK_REALTIME_HR in native code
       run: |
         find . -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
 
-    # ============ ИСПРАВЛЕНИЕ 6: Android.mk (разделяем флаги C и C++) ============
-    - name: Fix Android.mk for C and C++ flags
+    # ============ СОЗДАЁМ НОВЫЙ Android.mk с правильными флагами ============
+    - name: Create new Android.mk with correct C/C++ flags
       run: |
-        # Убираем -std=c99 из общих флагов
-        sed -i 's/LOCAL_CFLAGS += -std=c99//g' jni/Android.mk
-        sed -i 's/LOCAL_CFLAGS := -std=c99//g' jni/Android.mk
-        
-        # Добавляем правильные флаги для C и C++
-        # Если есть LOCAL_CFLAGS, добавляем -std=c99
-        if grep -q "LOCAL_CFLAGS" jni/Android.mk; then
-          sed -i 's/LOCAL_CFLAGS += /LOCAL_CFLAGS += -std=c99 /g' jni/Android.mk
-          sed -i 's/LOCAL_CFLAGS := /LOCAL_CFLAGS := -std=c99 /g' jni/Android.mk
-        else
-          echo "LOCAL_CFLAGS := -std=c99 -fPIC" >> jni/Android.mk
-        fi
-        
-        # Добавляем LOCAL_CPPFLAGS для C++ файлов
-        if ! grep -q "LOCAL_CPPFLAGS" jni/Android.mk; then
-          echo "LOCAL_CPPFLAGS := -std=c++11 -fPIC" >> jni/Android.mk
-        else
-          sed -i 's/LOCAL_CPPFLAGS += /LOCAL_CPPFLAGS += -std=c++11 /g' jni/Android.mk
-          sed -i 's/LOCAL_CPPFLAGS := /LOCAL_CPPFLAGS := -std=c++11 /g' jni/Android.mk
-        fi
+        cat > jni/Android.mk << 'EOF'
+        LOCAL_PATH := $(call my-dir)
 
-    # ============ ИСПРАВЛЕНИЕ 7: Application.mk ============
+        include $(CLEAR_VARS)
+
+        LOCAL_MODULE := genesis
+
+        # Все исходные файлы из вашего проекта
+        LOCAL_SRC_FILES := \
+            ../genplusgx/audio.c \
+            ../genplusgx/cart_hw.c \
+            ../genplusgx/cd_hw.c \
+            ../genplusgx/cpu.c \
+            ../genplusgx/ctc_hw.c \
+            ../genplusgx/eeprom_hw.c \
+            ../genplusgx/gfx_hw.c \
+            ../genplusgx/io.c \
+            ../genplusgx/mem68k.c \
+            ../genplusgx/memz80.c \
+            ../genplusgx/psg.c \
+            ../genplusgx/snd_emu.c \
+            ../genplusgx/system.c \
+            ../genplusgx/vdp_ctrl.c \
+            ../genplusgx/vdp_render.c \
+            ../genplusgx/vdp_render_16bit.c \
+            ../genplusgx/vdp_render_32x.c \
+            ../genplusgx/ym2612.c \
+            ../genplusgx/z80/z80.c \
+            ../genplusgx/z80/z80_instructions.c \
+            ../genplusgx/z80/z80_ops.c \
+            ../genplusgx/loadrom.c \
+            ../genplusgx/state.c \
+            ../genplusgx/gfx_scale.c \
+            ../genplusgx/effects.c \
+            ../genplusgx/skin.c \
+            ../genplusgx/m68k/m68kops.c \
+            ../genplusgx/m68k/m68kops_cycles.c \
+            ../genplusgx/m68k/m68kcpu.c \
+            ../genplusgx/m68k/m68kdasm.c \
+            libemu/GraphicsDriver.cpp \
+            libemu/Emulator.cpp
+
+        LOCAL_C_INCLUDES := \
+            $(LOCAL_PATH)/../genplusgx \
+            $(LOCAL_PATH)/../genplusgx/z80 \
+            $(LOCAL_PATH)/../genplusgx/m68k \
+            $(LOCAL_PATH)/libemu
+
+        # Правильные флаги: отдельно для C и C++
+        LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID
+        LOCAL_CPPFLAGS := -std=c++11 -fPIC -O2 -DANDROID
+        LOCAL_LDFLAGS := -fPIC
+
+        LOCAL_LDLIBS := -llog -lz -lGLESv1_CM
+
+        include $(BUILD_SHARED_LIBRARY)
+        EOF
+
+    # ============ Application.mk ============
     - name: Create Application.mk
       run: |
         cat > jni/Application.mk << 'EOF'
         APP_ABI := armeabi-v7a
         APP_PLATFORM := android-21
-        APP_CFLAGS += -std=c99 -fPIC
-        APP_CPPFLAGS += -std=c++11 -fPIC
-        APP_LDFLAGS += -fPIC
+        APP_CFLAGS := -std=c99 -fPIC -O2
+        APP_CPPFLAGS := -std=c++11 -fPIC -O2
+        APP_LDFLAGS := -fPIC
         APP_STL := c++_static
         EOF
 
@@ -230,7 +266,7 @@ jobs:
         echo "Checking for TEXTREL in .so files..."
         find . -name "*.so" -exec sh -c 'echo "Checking {}"; readelf --dynamic {} | grep -i TEXTREL || echo "✅ No TEXTREL found in {}"' \;
 
-    # ============ СОЗДАНИЕ GRADLE WRAPPER ============
+    # ============ GRADLE WRAPPER ============
     - name: Create Gradle wrapper
       run: |
         mkdir -p gradle/wrapper
@@ -248,7 +284,7 @@ jobs:
         EOF
         chmod +x gradlew
 
-    # ============ СОЗДАНИЕ GRADLE BUILD FILES ============
+    # ============ GRADLE BUILD FILES ============
     - name: Create Gradle build files
       run: |
         cat > settings.gradle << 'EOF'
@@ -288,8 +324,8 @@ jobs:
                 externalNativeBuild {
                     ndkBuild {
                         arguments "NDK_APPLICATION_MK:=Application.mk"
-                        cFlags "-std=c99 -fPIC"
-                        cppFlags "-std=c++11 -fPIC"
+                        cFlags "-std=c99 -fPIC -O2"
+                        cppFlags "-std=c++11 -fPIC -O2"
                         ldFlags "-fPIC"
                     }
                 }
@@ -328,14 +364,13 @@ jobs:
       run: |
         ./gradlew assembleDebug --no-daemon
 
-    # ============ ЗАГРУЗКА АРТЕФАКТА ============
+    # ============ ЗАГРУЗКА АРТЕФАКТОВ ============
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: DroidGEN-Gradle-Fixed
         path: build/outputs/apk/debug/*.apk
 
-    # ============ ДОПОЛНИТЕЛЬНО: ЗАГРУЗКА .so ДЛЯ ОТЛАДКИ ============
     - name: Upload native libraries for debugging
       uses: actions/upload-artifact@v4
       with:
