@@ -1,4 +1,4 @@
-name: Build DroidGEN with Gradle (Fully Fixed)
+name: Build DroidGEN with Gradle (No Warnings)
 
 on:
   workflow_dispatch:
@@ -192,40 +192,64 @@ jobs:
           mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
         fi
 
-    - name: Fix headers and create globals.c
+    - name: Create fixed config.h and globals.c
       run: |
-        cat > jni/../genplusgx/globals.c << 'EOF'
+        cat > jni/../genplusgx/config.h << 'EOF'
+        #ifndef CONFIG_H
+        #define CONFIG_H
+        
         #include <stdint.h>
+        
+        typedef unsigned char uint8;
+        typedef signed int int32;
+        typedef signed short int16;
+        
+        typedef struct
+        {
+            uint8 device;
+            uint8 port;
+            uint8 padtype;
+            uint8 hq_fm;
+            uint8 psgBoostNoise;
+            int32 psg_preamp;
+            int32 fm_preamp;
+            uint8 filter;
+            int16 lp_range;
+            int16 low_freq;
+            int16 high_freq;
+            uint8 dac_bits;
+            uint8 region_detect;
+            uint8 force_dtack;
+            uint8 addr_error;
+            uint8 tmss;
+            uint8 bios_enabled;
+            uint8 lock_on;
+            uint8 hot_swap;
+        } t_config;
+        
+        extern t_config config;
+        
+        #endif
+        EOF
+        
+        cat > jni/../genplusgx/globals.c << 'EOF'
+        #include "config.h"
         #include "m68k/m68k.h"
         #include "membnk.h"
-        #include "config.h"
-
+        
         u8 m68k_memory_map[0x1000000];
         u8 zbank_memory_map[0x10000];
         t_config config;
         EOF
-
-        echo '#include <stdint.h>' > jni/../genplusgx/config.h.tmp
-        cat jni/../genplusgx/config.h >> jni/../genplusgx/config.h.tmp
-        mv jni/../genplusgx/config.h.tmp jni/../genplusgx/config.h
-
-        find jni/../genplusgx -name "*.h" | while read file; do
-          if ! grep -q "#include <stdint.h>" "$file"; then
-            echo '#include <stdint.h>' > "$file.tmp"
-            cat "$file" >> "$file.tmp"
-            mv "$file.tmp" "$file"
-          fi
-        done
-
+        
         sed -i 's/^u8 m68k_memory_map/extern u8 m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
         sed -i 's/^u8 zbank_memory_map/extern u8 zbank_memory_map/' jni/../genplusgx/membnk.h
-        sed -i 's/^t_config config/extern t_config config/' jni/../genplusgx/config.h
-
+        
         if ! grep -q "globals.c" jni/Android.mk; then
           sed -i '/LOCAL_SRC_FILES := /a \\    ../genplusgx/globals.c \\' jni/Android.mk
         fi
 
-    - name: Fix Android.mk
+    - name: Fix Android.mk with -w flag
       run: |
         cp jni/Android.mk jni/Android.mk.bak
 
@@ -235,19 +259,19 @@ jobs:
 
         sed -i '/LOCAL_MODULE := genesis/a \
         \
-        LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__\
-        LOCAL_CPPFLAGS := -std=c++11 -fPIC -O2 -DANDROID -D__ANDROID__\
+        LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__ -w\
+        LOCAL_CPPFLAGS := -std=c++11 -fPIC -O2 -DANDROID -D__ANDROID__ -w\
         LOCAL_LDFLAGS := -fPIC\
         LOCAL_LDLIBS := -llog -lz -lGLESv1_CM\
         ' jni/Android.mk
 
-    - name: Fix Application.mk
+    - name: Fix Application.mk with -w flag
       run: |
         cat > jni/Application.mk << 'EOF'
         APP_ABI := armeabi-v7a
         APP_PLATFORM := android-21
-        APP_CFLAGS := -std=c99 -fPIC -O2
-        APP_CPPFLAGS := -std=c++11 -fPIC -O2
+        APP_CFLAGS := -std=c99 -fPIC -O2 -w
+        APP_CPPFLAGS := -std=c++11 -fPIC -O2 -w
         APP_LDFLAGS := -fPIC
         APP_STL := c++_static
         EOF
@@ -318,8 +342,8 @@ jobs:
                 externalNativeBuild {
                     ndkBuild {
                         arguments "NDK_APPLICATION_MK:=Application.mk"
-                        cFlags "-std=c99 -fPIC -O2"
-                        cppFlags "-std=c++11 -fPIC -O2"
+                        cFlags "-std=c99 -fPIC -O2 -w"
+                        cppFlags "-std=c++11 -fPIC -O2 -w"
                         ldFlags "-fPIC"
                     }
                 }
