@@ -201,6 +201,25 @@ jobs:
           echo "Includes already present"
         fi
 
+    - name: Fix duplicate symbols in headers
+      run: |
+        # Исправляем m68k.h
+        if grep -q "u8 m68k_memory_map" jni/../genplusgx/m68k/m68k.h; then
+          sed -i 's/u8 m68k_memory_map/extern u8 m68k_memory_map/g' jni/../genplusgx/m68k/m68k.h
+          echo "Fixed m68k_memory_map in m68k.h"
+        fi
+        
+        # Исправляем config.h
+        if grep -q "t_config config" jni/../genplusgx/config.h; then
+          sed -i 's/t_config config/extern t_config config/g' jni/../genplusgx/config.h
+          echo "Fixed config in config.h"
+        fi
+        
+        # Проверяем другие заголовки
+        find jni/../genplusgx -name "*.h" -exec grep -l "t_config config" {} \; | while read file; do
+          sed -i 's/t_config config/extern t_config config/g' "$file"
+        done
+
     - name: Fix Android.mk - add correct flags
       run: |
         cp jni/Android.mk jni/Android.mk.bak
