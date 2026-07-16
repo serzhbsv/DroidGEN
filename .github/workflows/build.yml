@@ -44,12 +44,31 @@ jobs:
         $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk
       continue-on-error: true
 
-    - name: Create Gradle wrapper
+    - name: Create Gradle wrapper manually
       run: |
-        # Создаём минимальный Gradle-проект без лишних опций
-        gradle init --type basic --dsl groovy --project-name DroidGEN
-        # Удаляем сгенерированные файлы, чтобы перезаписать их
-        rm -f build.gradle settings.gradle
+        # Создаём папку для wrapper
+        mkdir -p gradle/wrapper
+        
+        # Скачиваем wrapper.jar
+        curl -L https://raw.githubusercontent.com/gradle/gradle/v8.7.0/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
+        
+        # Создаём properties
+        cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
+        distributionBase=GRADLE_USER_HOME
+        distributionPath=wrapper/dists
+        distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-bin.zip
+        zipStoreBase=GRADLE_USER_HOME
+        zipStorePath=wrapper/dists
+        EOF
+        
+        # Создаём gradlew скрипт
+        cat > gradlew << 'EOF'
+        #!/bin/sh
+        exec java -cp "gradle/wrapper/gradle-wrapper.jar" org.gradle.wrapper.GradleWrapperMain "$@"
+        EOF
+        
+        # Делаем исполняемым
+        chmod +x gradlew
 
     - name: Create Gradle build files
       run: |
@@ -111,7 +130,6 @@ jobs:
 
     - name: Build with Gradle
       run: |
-        chmod +x gradlew
         ./gradlew assembleDebug --no-daemon
 
     - name: Upload APK artifact
