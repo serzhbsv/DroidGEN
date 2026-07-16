@@ -37,7 +37,6 @@ jobs:
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    # ============ AndroidManifest.xml ============
     - name: Fix AndroidManifest.xml
       run: |
         cat > AndroidManifest.xml << 'EOF'
@@ -69,7 +68,6 @@ jobs:
         </manifest>
         EOF
 
-    # ============ Ресурсы ============
     - name: Create missing resources
       run: |
         mkdir -p res/values
@@ -97,7 +95,6 @@ jobs:
         EOF
 
         cat > res/drawable/ic_launcher.xml << 'EOF'
-        <?xml version="1.0" encoding="utf-8"?>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
             <solid android:color="#FF4444" />
@@ -106,7 +103,6 @@ jobs:
         </shape>
         EOF
 
-    # ============ Java-код ============
     - name: Fix EmuActivity.java
       run: |
         cat > src/com/droidhits/genesisdroid/EmuActivity.java << 'EOF'
@@ -131,7 +127,7 @@ jobs:
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 int id = item.getItemId();
-                
+
                 if (id == R.id.menuMenu) {
                     return true;
                 } else if (id == R.id.menuSettings) {
@@ -176,7 +172,6 @@ jobs:
       run: |
         sed -i 's|getString(R.string.package_name)|"com.droidhits.genesisdroid"|g' src/com/droidhits/genesisdroid/MainActivity.java
 
-    # ============ Нативный код ============
     - name: Fix CLOCK_REALTIME_HR in native code
       run: |
         find jni -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
@@ -185,7 +180,6 @@ jobs:
       run: |
         for file in $(grep -l "LOGI\|LOGE" jni/*.cpp jni/*.c jni/libemu/*.cpp 2>/dev/null); do
           if ! grep -q "LOG_TAG" "$file"; then
-            echo "Adding LOG_TAG to $file"
             echo '#define LOG_TAG "DroidGEN"' | cat - "$file" > "$file.tmp"
             mv "$file.tmp" "$file"
           fi
@@ -196,62 +190,49 @@ jobs:
         if ! grep -q "#include <stdlib.h>" jni/libemu/GraphicsDriver.cpp && ! grep -q "#include <cstdlib>" jni/libemu/GraphicsDriver.cpp; then
           echo '#include <stdlib.h>' | cat - jni/libemu/GraphicsDriver.cpp > jni/libemu/GraphicsDriver.cpp.tmp
           mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
-          echo "Added #include <stdlib.h> to GraphicsDriver.cpp"
-        else
-          echo "Includes already present"
         fi
 
-    - name: Fix missing stdint.h in headers
+    - name: Fix headers and create globals.c
       run: |
-        # Добавляем #include <stdint.h> в config.h
-        if ! grep -q "#include <stdint.h>" jni/../genplusgx/config.h; then
-          sed -i '1i#include <stdint.h>' jni/../genplusgx/config.h
-          echo "Added #include <stdint.h> to config.h"
-        fi
-        
-        # Добавляем во все заголовки, где используются uint8/int32/int16
-        find jni/../genplusgx -name "*.h" -exec grep -l "uint8\|int32\|int16" {} \; | while read file; do
-          if ! grep -q "#include <stdint.h>" "$file"; then
-            echo "Adding #include <stdint.h> to $file"
-            sed -i '1i#include <stdint.h>' "$file"
-          fi
-        done
-
-    - name: Fix duplicate symbols in headers
-      run: |
-        # Создаём файл с определениями глобальных переменных
         cat > jni/../genplusgx/globals.c << 'EOF'
+        #include <stdint.h>
         #include "m68k/m68k.h"
         #include "membnk.h"
         #include "config.h"
-        
-        // Определения глобальных переменных
+
         u8 m68k_memory_map[0x1000000];
         u8 zbank_memory_map[0x10000];
         t_config config;
         EOF
-        
-        # Добавляем extern в заголовки
+
+        echo '#include <stdint.h>' > jni/../genplusgx/config.h.tmp
+        cat jni/../genplusgx/config.h >> jni/../genplusgx/config.h.tmp
+        mv jni/../genplusgx/config.h.tmp jni/../genplusgx/config.h
+
+        find jni/../genplusgx -name "*.h" | while read file; do
+          if ! grep -q "#include <stdint.h>" "$file"; then
+            echo '#include <stdint.h>' > "$file.tmp"
+            cat "$file" >> "$file.tmp"
+            mv "$file.tmp" "$file"
+          fi
+        done
+
         sed -i 's/^u8 m68k_memory_map/extern u8 m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
         sed -i 's/^u8 zbank_memory_map/extern u8 zbank_memory_map/' jni/../genplusgx/membnk.h
         sed -i 's/^t_config config/extern t_config config/' jni/../genplusgx/config.h
-        
-        # Добавляем globals.c в Android.mk, если его там нет
+
         if ! grep -q "globals.c" jni/Android.mk; then
           sed -i '/LOCAL_SRC_FILES := /a \\    ../genplusgx/globals.c \\' jni/Android.mk
-          echo "Added globals.c to Android.mk"
         fi
-        
-        echo "=== Fixed duplicate symbols ==="
 
-    - name: Fix Android.mk - add correct flags
+    - name: Fix Android.mk
       run: |
         cp jni/Android.mk jni/Android.mk.bak
-        
+
         sed -i '/^LOCAL_CFLAGS/d' jni/Android.mk
         sed -i '/^LOCAL_CPPFLAGS/d' jni/Android.mk
         sed -i '/^LOCAL_LDFLAGS/d' jni/Android.mk
-        
+
         sed -i '/LOCAL_MODULE := genesis/a \
         \
         LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__\
@@ -271,19 +252,16 @@ jobs:
         APP_STL := c++_static
         EOF
 
-    # ============ СБОРКА НАТИВНОГО КОДА ============
     - name: Build native code with NDK
       run: |
         cd jni
         $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
 
-    # ============ ПРОВЕРКА НА TEXT RELOCATIONS ============
     - name: Check for text relocations
       run: |
         echo "Checking for TEXTREL in .so files..."
-        find . -name "*.so" -exec sh -c 'echo "Checking {}"; readelf --dynamic {} | grep -i TEXTREL || echo "✅ No TEXTREL found in {}"' \;
+        find . -name "*.so" -exec sh -c 'echo "Checking {}"; readelf --dynamic {} | grep -i TEXTREL || echo "No TEXTREL found in {}"' \;
 
-    # ============ GRADLE WRAPPER ============
     - name: Create Gradle wrapper
       run: |
         mkdir -p gradle/wrapper
@@ -301,7 +279,6 @@ jobs:
         EOF
         chmod +x gradlew
 
-    # ============ GRADLE BUILD FILES ============
     - name: Create Gradle build files
       run: |
         cat > settings.gradle << 'EOF'
@@ -337,7 +314,7 @@ jobs:
                 minSdk 17
                 targetSdk 34
                 ndkVersion '25.2.9519653'
-                
+
                 externalNativeBuild {
                     ndkBuild {
                         arguments "NDK_APPLICATION_MK:=Application.mk"
@@ -376,12 +353,10 @@ jobs:
         }
         EOF
 
-    # ============ ФИНАЛЬНАЯ СБОРКА ============
     - name: Build with Gradle
       run: |
         ./gradlew assembleDebug --no-daemon
 
-    # ============ ЗАГРУЗКА АРТЕФАКТОВ ============
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
