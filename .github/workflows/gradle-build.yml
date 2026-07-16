@@ -201,6 +201,22 @@ jobs:
           echo "Includes already present"
         fi
 
+    - name: Fix missing stdint.h in headers
+      run: |
+        # Добавляем #include <stdint.h> в config.h
+        if ! grep -q "#include <stdint.h>" jni/../genplusgx/config.h; then
+          sed -i '1i#include <stdint.h>' jni/../genplusgx/config.h
+          echo "Added #include <stdint.h> to config.h"
+        fi
+        
+        # Добавляем во все заголовки, где используются uint8/int32/int16
+        find jni/../genplusgx -name "*.h" -exec grep -l "uint8\|int32\|int16" {} \; | while read file; do
+          if ! grep -q "#include <stdint.h>" "$file"; then
+            echo "Adding #include <stdint.h> to $file"
+            sed -i '1i#include <stdint.h>' "$file"
+          fi
+        done
+
     - name: Fix duplicate symbols in headers
       run: |
         # Создаём файл с определениями глобальных переменных
