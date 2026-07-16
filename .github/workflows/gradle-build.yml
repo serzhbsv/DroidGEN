@@ -203,22 +203,30 @@ jobs:
 
     - name: Fix duplicate symbols in headers
       run: |
-        # Исправляем m68k.h
-        if grep -q "u8 m68k_memory_map" jni/../genplusgx/m68k/m68k.h; then
-          sed -i 's/u8 m68k_memory_map/extern u8 m68k_memory_map/g' jni/../genplusgx/m68k/m68k.h
-          echo "Fixed m68k_memory_map in m68k.h"
+        # Создаём файл с определениями глобальных переменных
+        cat > jni/../genplusgx/globals.c << 'EOF'
+        #include "m68k/m68k.h"
+        #include "membnk.h"
+        #include "config.h"
+        
+        // Определения глобальных переменных
+        u8 m68k_memory_map[0x1000000];
+        u8 zbank_memory_map[0x10000];
+        t_config config;
+        EOF
+        
+        # Добавляем extern в заголовки
+        sed -i 's/^u8 m68k_memory_map/extern u8 m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
+        sed -i 's/^u8 zbank_memory_map/extern u8 zbank_memory_map/' jni/../genplusgx/membnk.h
+        sed -i 's/^t_config config/extern t_config config/' jni/../genplusgx/config.h
+        
+        # Добавляем globals.c в Android.mk, если его там нет
+        if ! grep -q "globals.c" jni/Android.mk; then
+          sed -i '/LOCAL_SRC_FILES := /a \\    ../genplusgx/globals.c \\' jni/Android.mk
+          echo "Added globals.c to Android.mk"
         fi
         
-        # Исправляем config.h
-        if grep -q "t_config config" jni/../genplusgx/config.h; then
-          sed -i 's/t_config config/extern t_config config/g' jni/../genplusgx/config.h
-          echo "Fixed config in config.h"
-        fi
-        
-        # Проверяем другие заголовки
-        find jni/../genplusgx -name "*.h" -exec grep -l "t_config config" {} \; | while read file; do
-          sed -i 's/t_config config/extern t_config config/g' "$file"
-        done
+        echo "=== Fixed duplicate symbols ==="
 
     - name: Fix Android.mk - add correct flags
       run: |
