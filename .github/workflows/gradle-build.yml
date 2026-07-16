@@ -1,7 +1,7 @@
-name: Build with Gradle (Modern)
+name: Build DroidGEN with Gradle (Fully Fixed)
 
 on:
-  workflow_dispatch:  # только ручной запуск
+  workflow_dispatch:
 
 jobs:
   build:
@@ -33,8 +33,7 @@ jobs:
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    # ==================== ПРАВКИ НАЧИНАЮТСЯ ====================
-
+    # ============ ИСПРАВЛЕНИЕ 1: AndroidManifest.xml ============
     - name: Fix AndroidManifest.xml
       run: |
         cat > AndroidManifest.xml << 'EOF'
@@ -66,6 +65,7 @@ jobs:
         </manifest>
         EOF
 
+    # ============ ИСПРАВЛЕНИЕ 2: Ресурсы ============
     - name: Create missing resources
       run: |
         mkdir -p res/values
@@ -102,7 +102,8 @@ jobs:
         </shape>
         EOF
 
-    - name: Fix Java sources
+    # ============ ИСПРАВЛЕНИЕ 3: Java-код (EmuActivity) ============
+    - name: Fix EmuActivity.java
       run: |
         cat > src/com/droidhits/genesisdroid/EmuActivity.java << 'EOF'
         package com.droidhits.genesisdroid;
@@ -126,7 +127,7 @@ jobs:
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 int id = item.getItemId();
-
+                
                 if (id == R.id.menuMenu) {
                     return true;
                 } else if (id == R.id.menuSettings) {
@@ -167,14 +168,49 @@ jobs:
         }
         EOF
 
-    # ==================== ПРАВКИ ЗАКОНЧЕНЫ ====================
+    # ============ ИСПРАВЛЕНИЕ 4: MainActivity.java (package_name) ============
+    - name: Fix MainActivity.java
+      run: |
+        sed -i 's|getString(R.string.package_name)|"com.droidhits.genesisdroid"|g' src/com/droidhits/genesisdroid/MainActivity.java
 
+    # ============ ИСПРАВЛЕНИЕ 5: Android.mk (добавляем -fPIC) ============
+    - name: Fix Android.mk for PIC
+      run: |
+        # Добавляем -fPIC во все модули
+        sed -i 's/LOCAL_CFLAGS += /LOCAL_CFLAGS += -fPIC /g' jni/Android.mk
+        sed -i 's/LOCAL_CFLAGS := /LOCAL_CFLAGS := -fPIC /g' jni/Android.mk
+        sed -i 's/LOCAL_LDFLAGS += /LOCAL_LDFLAGS += -fPIC /g' jni/Android.mk
+        sed -i 's/LOCAL_LDFLAGS := /LOCAL_LDFLAGS := -fPIC /g' jni/Android.mk
+        
+        # Если в Android.mk нет LOCAL_CFLAGS, добавляем в каждый модуль
+        if ! grep -q "LOCAL_CFLAGS" jni/Android.mk; then
+          echo "LOCAL_CFLAGS := -fPIC" >> jni/Android.mk
+        fi
+
+    # ============ ИСПРАВЛЕНИЕ 6: Application.mk ============
+    - name: Create Application.mk
+      run: |
+        cat > jni/Application.mk << 'EOF'
+        APP_ABI := armeabi-v7a
+        APP_PLATFORM := android-21
+        APP_CFLAGS += -fPIC
+        APP_LDFLAGS += -fPIC
+        APP_STL := c++_static
+        EOF
+
+    # ============ СБОРКА НАТИВНОГО КОДА ============
     - name: Build native code with NDK
       run: |
         cd jni
-        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk
-      continue-on-error: true
+        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
 
+    # ============ ПРОВЕРКА НА TEXT RELOCATIONS ============
+    - name: Check for text relocations
+      run: |
+        echo "Checking for TEXTREL in .so files..."
+        find . -name "*.so" -exec sh -c 'echo "Checking {}"; readelf --dynamic {} | grep -i TEXTREL || echo "✅ No TEXTREL found in {}"' \;
+
+    # ============ СОЗДАНИЕ GRADLE WRAPPER ============
     - name: Create Gradle wrapper
       run: |
         mkdir -p gradle/wrapper
@@ -192,6 +228,7 @@ jobs:
         EOF
         chmod +x gradlew
 
+    # ============ СОЗДАНИЕ GRADLE BUILD FILES ============
     - name: Create Gradle build files
       run: |
         cat > settings.gradle << 'EOF'
@@ -227,6 +264,14 @@ jobs:
                 minSdk 17
                 targetSdk 34
                 ndkVersion '25.2.9519653'
+                
+                externalNativeBuild {
+                    ndkBuild {
+                        arguments "NDK_APPLICATION_MK:=Application.mk"
+                        cFlags "-fPIC -O2"
+                        ldFlags "-fPIC"
+                    }
+                }
             }
 
             sourceSets {
@@ -257,12 +302,21 @@ jobs:
         }
         EOF
 
+    # ============ ФИНАЛЬНАЯ СБОРКА ============
     - name: Build with Gradle
       run: |
         ./gradlew assembleDebug --no-daemon
 
+    # ============ ЗАГРУЗКА АРТЕФАКТА ============
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: DroidGEN-Gradle
+        name: DroidGEN-Gradle-Fixed
         path: build/outputs/apk/debug/*.apk
+
+    # ============ ДОПОЛНИТЕЛЬНО: ЗАГРУЗКА .so ДЛЯ ОТЛАДКИ ============
+    - name: Upload native libraries for debugging
+      uses: actions/upload-artifact@v4
+      with:
+        name: Native-Libraries
+        path: libs/**/*.so
