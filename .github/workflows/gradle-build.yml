@@ -181,15 +181,15 @@ jobs:
       run: |
         find jni -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
 
-    - name: Fix LOG_TAG in GraphicsDriver.cpp
+    - name: Fix LOG_TAG in all C++ files
       run: |
-        if ! grep -q "LOG_TAG" jni/libemu/GraphicsDriver.cpp; then
-          echo '#define LOG_TAG "GraphicsDriver"' | cat - jni/libemu/GraphicsDriver.cpp > jni/libemu/GraphicsDriver.cpp.tmp
-          mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
-          echo "LOG_TAG added to GraphicsDriver.cpp"
-        else
-          echo "LOG_TAG already defined"
-        fi
+        for file in $(grep -l "LOGI\|LOGE" jni/*.cpp jni/*.c jni/libemu/*.cpp 2>/dev/null); do
+          if ! grep -q "LOG_TAG" "$file"; then
+            echo "Adding LOG_TAG to $file"
+            echo '#define LOG_TAG "DroidGEN"' | cat - "$file" > "$file.tmp"
+            mv "$file.tmp" "$file"
+          fi
+        done
 
     - name: Fix missing includes in GraphicsDriver.cpp
       run: |
