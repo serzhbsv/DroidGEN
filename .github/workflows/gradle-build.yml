@@ -203,6 +203,7 @@ jobs:
         typedef unsigned char uint8;
         typedef signed int int32;
         typedef signed short int16;
+        typedef unsigned char u8;
         
         typedef struct
         {
@@ -241,6 +242,14 @@ jobs:
         u8 zbank_memory_map[0x10000];
         t_config config;
         EOF
+        
+        if ! grep -q "typedef.*u8" jni/../genplusgx/m68k/m68k.h; then
+          sed -i '1i typedef unsigned char u8;' jni/../genplusgx/m68k/m68k.h
+        fi
+        
+        if ! grep -q "typedef.*u8" jni/../genplusgx/membnk.h; then
+          sed -i '1i typedef unsigned char u8;' jni/../genplusgx/membnk.h
+        fi
         
         sed -i 's/^u8 m68k_memory_map/extern u8 m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
         sed -i 's/^u8 zbank_memory_map/extern u8 zbank_memory_map/' jni/../genplusgx/membnk.h
