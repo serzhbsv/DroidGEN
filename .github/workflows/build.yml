@@ -81,6 +81,7 @@ jobs:
         apply plugin: 'com.android.application'
 
         android {
+            namespace 'com.droidhits.genesisdroid'
             compileSdk 34
 
             defaultConfig {
