@@ -1,0 +1,60 @@
+name: Build with Ant (Legacy)
+
+on:
+  workflow_dispatch:  # только ручной запуск
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install old SDK components (API 17)
+      run: |
+        echo "y" | sdkmanager "platforms;android-17"
+        echo "y" | sdkmanager "build-tools;30.0.3"
+        echo "y" | sdkmanager "platform-tools"
+
+    - name: Create local.properties
+      run: |
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+    - name: Set up Android NDK r21
+      run: |
+        echo "y" | sdkmanager "ndk;21.4.7075529"
+        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/21.4.7075529" >> $GITHUB_ENV
+
+    - name: Build native code with NDK
+      run: |
+        cd jni
+        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk
+
+    - name: Copy .so files to libs
+      run: |
+        mkdir -p libs/armeabi-v7a
+        find . -name "*.so" -exec cp {} libs/armeabi-v7a/ \;
+
+    - name: Update project for Ant
+      run: |
+        android update project -p . --target android-17
+
+    - name: Build with Ant
+      run: |
+        ant debug
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DroidGEN-Ant
+        path: bin/*.apk
