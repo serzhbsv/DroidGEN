@@ -11,17 +11,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up JDK 11
+    # 1. Устанавливаем JDK 17 (вместо 11)
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '11'
+        java-version: '17'
 
+    # 2. Настраиваем Android SDK с обходом проблем
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
+      env:
+        # Принудительно используем Node.js 20 (временное решение)
+        ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+        # Пропускаем проверку версии JDK (мы уже установили 17)
+        SKIP_JDK_VERSION_CHECK: true
 
     - name: Install old SDK components (API 17)
       run: |
+        # Используем обновлённый sdkmanager
+        export JAVA_HOME=$JAVA_HOME_17_X64
         echo "y" | sdkmanager "platforms;android-17"
         echo "y" | sdkmanager "build-tools;30.0.3"
         echo "y" | sdkmanager "platform-tools"
@@ -32,6 +41,7 @@ jobs:
 
     - name: Set up Android NDK r21
       run: |
+        export JAVA_HOME=$JAVA_HOME_17_X64
         echo "y" | sdkmanager "ndk;21.4.7075529"
         echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/21.4.7075529" >> $GITHUB_ENV
 
@@ -45,16 +55,12 @@ jobs:
         mkdir -p libs/armeabi-v7a
         find . -name "*.so" -exec cp {} libs/armeabi-v7a/ \;
 
-    # ============ ДОБАВЛЯЕМ МИНИМАЛЬНЫЕ РЕСУРСЫ ДЛЯ ANT ============
-    
     - name: Create minimal resources for Ant
       run: |
-        # Создаём папки если их нет
         mkdir -p res/values
         mkdir -p res/drawable
-        
-        # Добавляем недостающие строки
-        cat >> res/values/strings.xml << 'EOF'
+
+        cat > res/values/strings.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
             <string name="app_name">DroidGEN</string>
@@ -65,9 +71,8 @@ jobs:
             <string name="package_name">com.droidhits.genesisdroid</string>
         </resources>
         EOF
-        
-        # Создаём стили (если их нет)
-        cat >> res/values/styles.xml << 'EOF'
+
+        cat > res/values/styles.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
             <style name="Theme.DroidGEN" parent="android:Theme.Light.NoTitleBar">
@@ -75,9 +80,8 @@ jobs:
             </style>
         </resources>
         EOF
-        
-        # Создаём простую иконку
-        cat >> res/drawable/ic_launcher.xml << 'EOF'
+
+        cat > res/drawable/ic_launcher.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
@@ -87,19 +91,18 @@ jobs:
         </shape>
         EOF
 
-    - name: Fix MainActivity.java for Ant (remove R.string.package_name)
+    - name: Fix MainActivity.java for Ant
       run: |
-        # Заменяем R.string.package_name на строку, если такой ресурс не найден
         sed -i 's|getString(R.string.package_name)|"com.droidhits.genesisdroid"|g' src/com/droidhits/genesisdroid/MainActivity.java
-
-    # ============ КОНЕЦ ДОБАВЛЕННЫХ ПРАВОК ============
 
     - name: Update project for Ant
       run: |
+        export JAVA_HOME=$JAVA_HOME_17_X64
         android update project -p . --target android-17
 
     - name: Build with Ant
       run: |
+        export JAVA_HOME=$JAVA_HOME_17_X64
         ant debug
 
     - name: Upload APK artifact
