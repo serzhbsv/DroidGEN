@@ -110,6 +110,13 @@ jobs:
             }
         }
 
+        allprojects {
+            repositories {
+                google()
+                mavenCentral()
+            }
+        }
+
         apply plugin: 'com.android.application'
 
         android {
