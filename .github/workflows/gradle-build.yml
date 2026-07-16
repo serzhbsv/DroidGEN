@@ -19,6 +19,9 @@ jobs:
 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
+      env:
+        ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+        SKIP_JDK_VERSION_CHECK: true
 
     - name: Set up Android NDK 25.2
       run: |
@@ -27,6 +30,7 @@ jobs:
 
     - name: Install SDK components
       run: |
+        export JAVA_HOME=$JAVA_HOME_17_X64
         sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
     - name: Create local.properties
@@ -178,16 +182,28 @@ jobs:
       run: |
         find . -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
 
-    # ============ ИСПРАВЛЕНИЕ 6: Android.mk (добавляем -fPIC) ============
-    - name: Fix Android.mk for PIC
+    # ============ ИСПРАВЛЕНИЕ 6: Android.mk (разделяем флаги C и C++) ============
+    - name: Fix Android.mk for C and C++ flags
       run: |
-        sed -i 's/LOCAL_CFLAGS += /LOCAL_CFLAGS += -fPIC /g' jni/Android.mk
-        sed -i 's/LOCAL_CFLAGS := /LOCAL_CFLAGS := -fPIC /g' jni/Android.mk
-        sed -i 's/LOCAL_LDFLAGS += /LOCAL_LDFLAGS += -fPIC /g' jni/Android.mk
-        sed -i 's/LOCAL_LDFLAGS := /LOCAL_LDFLAGS := -fPIC /g' jni/Android.mk
+        # Убираем -std=c99 из общих флагов
+        sed -i 's/LOCAL_CFLAGS += -std=c99//g' jni/Android.mk
+        sed -i 's/LOCAL_CFLAGS := -std=c99//g' jni/Android.mk
         
-        if ! grep -q "LOCAL_CFLAGS" jni/Android.mk; then
-          echo "LOCAL_CFLAGS := -fPIC" >> jni/Android.mk
+        # Добавляем правильные флаги для C и C++
+        # Если есть LOCAL_CFLAGS, добавляем -std=c99
+        if grep -q "LOCAL_CFLAGS" jni/Android.mk; then
+          sed -i 's/LOCAL_CFLAGS += /LOCAL_CFLAGS += -std=c99 /g' jni/Android.mk
+          sed -i 's/LOCAL_CFLAGS := /LOCAL_CFLAGS := -std=c99 /g' jni/Android.mk
+        else
+          echo "LOCAL_CFLAGS := -std=c99 -fPIC" >> jni/Android.mk
+        fi
+        
+        # Добавляем LOCAL_CPPFLAGS для C++ файлов
+        if ! grep -q "LOCAL_CPPFLAGS" jni/Android.mk; then
+          echo "LOCAL_CPPFLAGS := -std=c++11 -fPIC" >> jni/Android.mk
+        else
+          sed -i 's/LOCAL_CPPFLAGS += /LOCAL_CPPFLAGS += -std=c++11 /g' jni/Android.mk
+          sed -i 's/LOCAL_CPPFLAGS := /LOCAL_CPPFLAGS := -std=c++11 /g' jni/Android.mk
         fi
 
     # ============ ИСПРАВЛЕНИЕ 7: Application.mk ============
@@ -196,7 +212,8 @@ jobs:
         cat > jni/Application.mk << 'EOF'
         APP_ABI := armeabi-v7a
         APP_PLATFORM := android-21
-        APP_CFLAGS += -fPIC
+        APP_CFLAGS += -std=c99 -fPIC
+        APP_CPPFLAGS += -std=c++11 -fPIC
         APP_LDFLAGS += -fPIC
         APP_STL := c++_static
         EOF
@@ -271,7 +288,8 @@ jobs:
                 externalNativeBuild {
                     ndkBuild {
                         arguments "NDK_APPLICATION_MK:=Application.mk"
-                        cFlags "-fPIC -O2"
+                        cFlags "-std=c99 -fPIC"
+                        cppFlags "-std=c++11 -fPIC"
                         ldFlags "-fPIC"
                     }
                 }
