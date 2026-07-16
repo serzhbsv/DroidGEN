@@ -36,7 +36,6 @@ jobs:
     - name: Create local.properties
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
-        echo "ndk.dir=$ANDROID_NDK_HOME" >> local.properties
 
     - name: Fix AndroidManifest.xml
       run: |
@@ -71,19 +70,20 @@ jobs:
 
     - name: Create missing resources
       run: |
-        # Создаём папки если их нет
         mkdir -p res/values
         mkdir -p res/drawable
         
-        # Создаём strings.xml
         cat > res/values/strings.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
             <string name="app_name">DroidGEN</string>
+            <string name="loadRomButtonLabel">Load ROM</string>
+            <string name="resumeButtonLabel">Resume</string>
+            <string name="settingButtonLabel">Settings</string>
+            <string name="exitButtonLabel">Exit</string>
         </resources>
         EOF
         
-        # Создаём styles.xml
         cat > res/values/styles.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
@@ -93,7 +93,6 @@ jobs:
         </resources>
         EOF
         
-        # Создаём простую иконку
         cat > res/drawable/ic_launcher.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
