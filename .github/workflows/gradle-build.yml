@@ -192,8 +192,9 @@ jobs:
           mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
         fi
 
-    - name: Create fixed config.h and globals.c
+    - name: Fix headers and remove globals.c
       run: |
+        # 1. Создаём новый config.h
         cat > jni/../genplusgx/config.h << 'EOF'
         #ifndef CONFIG_H
         #define CONFIG_H
@@ -203,7 +204,6 @@ jobs:
         typedef unsigned char uint8;
         typedef signed int int32;
         typedef signed short int16;
-        typedef unsigned char u8;
         
         typedef struct
         {
@@ -233,30 +233,17 @@ jobs:
         #endif
         EOF
         
-        cat > jni/../genplusgx/globals.c << 'EOF'
-        #include "config.h"
-        #include "m68k/m68k.h"
-        #include "membnk.h"
+        # 2. Добавляем extern в m68k.h
+        sed -i 's/^_m68k_memory_map m68k_memory_map/extern _m68k_memory_map m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
         
-        u8 m68k_memory_map[0x1000000];
-        u8 zbank_memory_map[0x10000];
-        t_config config;
-        EOF
+        # 3. Добавляем extern в membnk.h
+        sed -i 's/^} zbank_memory_map/extern } zbank_memory_map/' jni/../genplusgx/membnk.h
         
-        if ! grep -q "typedef.*u8" jni/../genplusgx/m68k/m68k.h; then
-          sed -i '1i typedef unsigned char u8;' jni/../genplusgx/m68k/m68k.h
-        fi
+        # 4. Удаляем globals.c
+        rm -f jni/../genplusgx/globals.c
         
-        if ! grep -q "typedef.*u8" jni/../genplusgx/membnk.h; then
-          sed -i '1i typedef unsigned char u8;' jni/../genplusgx/membnk.h
-        fi
-        
-        sed -i 's/^u8 m68k_memory_map/extern u8 m68k_memory_map/' jni/../genplusgx/m68k/m68k.h
-        sed -i 's/^u8 zbank_memory_map/extern u8 zbank_memory_map/' jni/../genplusgx/membnk.h
-        
-        if ! grep -q "globals.c" jni/Android.mk; then
-          sed -i '/LOCAL_SRC_FILES := /a \\    ../genplusgx/globals.c \\' jni/Android.mk
-        fi
+        # 5. Удаляем globals.c из Android.mk
+        sed -i '/globals.c/d' jni/Android.mk
 
     - name: Fix Android.mk with -w flag
       run: |
