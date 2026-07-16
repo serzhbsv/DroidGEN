@@ -42,8 +42,7 @@ jobs:
       run: |
         cat > AndroidManifest.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools">
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -68,6 +67,41 @@ jobs:
             </application>
 
         </manifest>
+        EOF
+
+    - name: Create missing resources
+      run: |
+        # Создаём папки если их нет
+        mkdir -p res/values
+        mkdir -p res/drawable
+        
+        # Создаём strings.xml
+        cat > res/values/strings.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <string name="app_name">DroidGEN</string>
+        </resources>
+        EOF
+        
+        # Создаём styles.xml
+        cat > res/values/styles.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <style name="Theme.DroidGEN" parent="android:Theme.Light.NoTitleBar">
+                <item name="android:windowBackground">@android:color/black</item>
+            </style>
+        </resources>
+        EOF
+        
+        # Создаём простую иконку
+        cat > res/drawable/ic_launcher.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+            <solid android:color="#FF4444" />
+            <corners android:radius="8dp" />
+            <padding android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp" />
+        </shape>
         EOF
 
     - name: Build native code with NDK
@@ -127,6 +161,7 @@ jobs:
                 applicationId "com.droidhits.genesisdroid"
                 minSdk 17
                 targetSdk 34
+                ndkVersion '25.2.9519653'
             }
 
             sourceSets {
