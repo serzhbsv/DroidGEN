@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch:  # позволяет запускать вручную из интерфейса GitHub
+  workflow_dispatch:
 
 jobs:
   build:
@@ -41,13 +41,14 @@ jobs:
     - name: Build native code with NDK
       run: |
         cd jni
-        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
-      continue-on-error: true  # если нет Application.mk, продолжим
+        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk
+      continue-on-error: true
 
-    - name: Set up Gradle wrapper
+    - name: Create Gradle wrapper
       run: |
-        gradle init --type basic --dsl groovy --project-name DroidGEN --no-build-script
-        # Создадим правильные файлы сборки вместо сгенерированных
+        # Создаём минимальный Gradle-проект без лишних опций
+        gradle init --type basic --dsl groovy --project-name DroidGEN
+        # Удаляем сгенерированные файлы, чтобы перезаписать их
         rm -f build.gradle settings.gradle
 
     - name: Create Gradle build files
