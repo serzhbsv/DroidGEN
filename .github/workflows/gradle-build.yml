@@ -176,22 +176,29 @@ jobs:
       run: |
         sed -i 's|getString(R.string.package_name)|"com.droidhits.genesisdroid"|g' src/com/droidhits/genesisdroid/MainActivity.java
 
-    # ============ ИСПРАВЛЕНИЕ: CLOCK_REALTIME_HR ============
+    # ============ Нативный код ============
     - name: Fix CLOCK_REALTIME_HR in native code
       run: |
         find jni -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
 
-    # ============ ИСПРАВЛЕНИЕ: Android.mk ============
+    - name: Fix LOG_TAG in GraphicsDriver.cpp
+      run: |
+        if ! grep -q "LOG_TAG" jni/libemu/GraphicsDriver.cpp; then
+          echo '#define LOG_TAG "GraphicsDriver"' | cat - jni/libemu/GraphicsDriver.cpp > jni/libemu/GraphicsDriver.cpp.tmp
+          mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
+          echo "LOG_TAG added to GraphicsDriver.cpp"
+        else
+          echo "LOG_TAG already defined"
+        fi
+
     - name: Fix Android.mk - add correct flags
       run: |
         cp jni/Android.mk jni/Android.mk.bak
         
-        # Удаляем старые флаги
         sed -i '/^LOCAL_CFLAGS/d' jni/Android.mk
         sed -i '/^LOCAL_CPPFLAGS/d' jni/Android.mk
         sed -i '/^LOCAL_LDFLAGS/d' jni/Android.mk
         
-        # Добавляем новые флаги после LOCAL_MODULE
         sed -i '/LOCAL_MODULE := genesis/a \
         \
         LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__\
@@ -200,7 +207,6 @@ jobs:
         LOCAL_LDLIBS := -llog -lz -lGLESv1_CM\
         ' jni/Android.mk
 
-    # ============ ИСПРАВЛЕНИЕ: Application.mk ============
     - name: Fix Application.mk
       run: |
         cat > jni/Application.mk << 'EOF'
