@@ -191,6 +191,16 @@ jobs:
           echo "LOG_TAG already defined"
         fi
 
+    - name: Fix missing includes in GraphicsDriver.cpp
+      run: |
+        if ! grep -q "#include <stdlib.h>" jni/libemu/GraphicsDriver.cpp && ! grep -q "#include <cstdlib>" jni/libemu/GraphicsDriver.cpp; then
+          echo '#include <stdlib.h>' | cat - jni/libemu/GraphicsDriver.cpp > jni/libemu/GraphicsDriver.cpp.tmp
+          mv jni/libemu/GraphicsDriver.cpp.tmp jni/libemu/GraphicsDriver.cpp
+          echo "Added #include <stdlib.h> to GraphicsDriver.cpp"
+        else
+          echo "Includes already present"
+        fi
+
     - name: Fix Android.mk - add correct flags
       run: |
         cp jni/Android.mk jni/Android.mk.bak
