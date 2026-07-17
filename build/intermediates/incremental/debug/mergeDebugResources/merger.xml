@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="F:\DeepSeek\Cpp\DroidGEN\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="F:\DeepSeek\Cpp\DroidGEN\res"><file name="ic_launcher" path="F:\DeepSeek\Cpp\DroidGEN\res\drawable\ic_launcher.xml" qualifiers="" type="drawable"/><file name="icon" path="F:\DeepSeek\Cpp\DroidGEN\res\drawable-hdpi\icon.png" qualifiers="hdpi-v4" type="drawable"/><file name="icon" path="F:\DeepSeek\Cpp\DroidGEN\res\drawable-ldpi\icon.png" qualifiers="ldpi-v4" type="drawable"/><file name="icon" path="F:\DeepSeek\Cpp\DroidGEN\res\drawable-mdpi\icon.png" qualifiers="mdpi-v4" type="drawable"/><file name="icon" path="F:\DeepSeek\Cpp\DroidGEN\res\drawable-xhdpi\icon.png" qualifiers="xhdpi-v4" type="drawable"/><file name="icon" path="F:\DeepSeek\Cpp\DroidGEN\res\drawable-xxhdpi\icon.png" qualifiers="xxhdpi-v4" type="drawable"/><file name="custom_key_view" path="F:\DeepSeek\Cpp\DroidGEN\res\layout\custom_key_view.xml" qualifiers="" type="layout"/><file name="dialog_slider" path="F:\DeepSeek\Cpp\DroidGEN\res\layout\dialog_slider.xml" qualifiers="" type="layout"/><file name="file_choose" path="F:\DeepSeek\Cpp\DroidGEN\res\layout\file_choose.xml" qualifiers="" type="layout"/><file name="file_view" path="F:\DeepSeek\Cpp\DroidGEN\res\layout\file_view.xml" qualifiers="" type="layout"/><file name="main" path="F:\DeepSeek\Cpp\DroidGEN\res\layout\main.xml" qualifiers="" type="layout"/><file name="settings" path="F:\DeepSeek\Cpp\DroidGEN\res\layout\settings.xml" qualifiers="" type="layout"/><file name="emulator" path="F:\DeepSeek\Cpp\DroidGEN\res\menu\emulator.xml" qualifiers="" type="menu"/><file name="keyboard_config_menu" path="F:\DeepSeek\Cpp\DroidGEN\res\menu\keyboard_config_menu.xml" qualifiers="" type="menu"/><file name="main" path="F:\DeepSeek\Cpp\DroidGEN\res\menu\main.xml" qualifiers="" type="menu"/><file path="F:\DeepSeek\Cpp\DroidGEN\res\values\array.xml" qualifiers=""><string-array name="listArray">
+        <item>11025</item>
+        <item>22050</item>
+        <item>44100</item>
+        <item>48000</item>
+    </string-array><string-array name="listValues">
+        <item>11025</item>
+        <item>22050</item>
+        <item>44100</item>
+        <item>48000</item>
+    </string-array><string-array name="frameSkipValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array><string-array name="hardwareFilterArray">
+        <item>Linear interpolation</item>
+        <item>Point filtering</item>        
+    </string-array><string-array name="hardwareFilterValues">
+        <item>true</item>
+        <item>false</item>        
+    </string-array></file><file path="F:\DeepSeek\Cpp\DroidGEN\res\values\attrs.xml" qualifiers=""><declare-styleable name="com.droidhits.genesisdroid.SeekBarPreference">
+		<attr format="integer" name="minValue"/>
+		<attr format="integer" name="maxValue"/>
+	</declare-styleable></file><file path="F:\DeepSeek\Cpp\DroidGEN\res\values\colors.xml" qualifiers=""><color name="orange">#ff5500</color><color name="white_color">#ffffff</color><color name="transparent">#00000000</color><color name="date_color">#999999</color><color name="black">#000000</color><color name="gray_color">#999999</color><color name="blue">#0066cc</color><color name="gold">#e6b121</color><color name="blueback">#99FFFF</color><color name="articlecolor">#3399FF</color><color name="article_title">#3399FF</color><color name="cachecolor">#8ad0e8</color></file><file path="F:\DeepSeek\Cpp\DroidGEN\res\values\strings.xml" qualifiers=""><string name="package_name">"com.droidhits.genesisdroid"</string><string name="app_version">1</string><string name="app_name">DroidGEN</string><string name="loadRomButtonLabel">Load ROM</string><string name="resumeButtonLabel">Resume</string><string name="aboutButtonLabel">About</string><string name="exitButtonLabel">Exit</string><string name="settingButtonLabel">Settings</string><string name="Copyright">Copyright 2012 - DroidHits / blunden</string></file><file path="F:\DeepSeek\Cpp\DroidGEN\res\values\styles.xml" qualifiers=""><style name="Theme.DroidGEN" parent="android:Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style></file></source></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="F:\DeepSeek\Cpp\DroidGEN\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="F:\DeepSeek\Cpp\DroidGEN\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="F:\DeepSeek\Cpp\DroidGEN\build\generated\res\resValues\debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="F:\DeepSeek\Cpp\DroidGEN\build\generated\res\resValues\debug"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="com.droidhits.genesisdroid.SeekBarPreference">
+		<attr format="integer" name="minValue"/>
+		<attr format="integer" name="maxValue"/>
+	</declare-styleable></configuration></mergedItems></merger>

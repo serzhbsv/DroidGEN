@@ -1,0 +1,7 @@
+com.droidhits.genesisdroid-pngs-0 F:\DeepSeek\Cpp\DroidGEN\build\generated\res\pngs\debug
+com.droidhits.genesisdroid-resValues-1 F:\DeepSeek\Cpp\DroidGEN\build\generated\res\resValues\debug
+com.droidhits.genesisdroid-packageDebugResources-2 F:\DeepSeek\Cpp\DroidGEN\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.droidhits.genesisdroid-packageDebugResources-3 F:\DeepSeek\Cpp\DroidGEN\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.droidhits.genesisdroid-debug-4 F:\DeepSeek\Cpp\DroidGEN\build\intermediates\merged_res\debug\mergeDebugResources
+com.droidhits.genesisdroid-DroidGEN-5 F:\DeepSeek\Cpp\DroidGEN\res
+com.droidhits.genesisdroid-debug-6 F:\DeepSeek\Cpp\DroidGEN\src\debug\res

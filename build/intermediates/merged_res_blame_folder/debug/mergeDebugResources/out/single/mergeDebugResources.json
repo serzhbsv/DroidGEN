@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/drawable_ic_launcher.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/drawable/ic_launcher.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/drawable-mdpi_icon.png.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/drawable-mdpi/icon.png"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/menu_keyboard_config_menu.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/menu/keyboard_config_menu.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/layout_main.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/layout/main.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/drawable-xhdpi_icon.png.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/drawable-xhdpi/icon.png"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/drawable-hdpi_icon.png.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/drawable-hdpi/icon.png"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/layout_settings.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/layout/settings.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/layout_custom_key_view.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/layout/custom_key_view.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/drawable-xxhdpi_icon.png.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/drawable-xxhdpi/icon.png"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/layout_file_view.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/layout/file_view.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/menu_emulator.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/menu/emulator.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/menu_main.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/menu/main.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/layout_dialog_slider.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/layout/dialog_slider.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/layout_file_choose.xml.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/layout/file_choose.xml"
+    },
+    {
+        "merged": "com.droidhits.genesisdroid-debug-4:/drawable-ldpi_icon.png.flat",
+        "source": "com.droidhits.genesisdroid-DroidGEN-5:/drawable-ldpi/icon.png"
+    }
+]

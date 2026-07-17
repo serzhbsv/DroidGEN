@@ -1,0 +1,107 @@
+-- Merging decision tree log ---
+manifest
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:2:1-35:12
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:2:1-35:12
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:2:1-35:12
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:2:1-35:12
+	package
+		INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+	android:versionName
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:3:31-56
+		INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+	xmlns:android
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:2:11-69
+	android:versionCode
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:3:7-30
+		INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:4:5-78
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:4:22-76
+uses-permission#android.permission.INTERNET
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:5:5-66
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:5:22-64
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:6:2-77
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:6:19-75
+uses-feature#0x00020000
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:7:2-50
+	android:glEsVersion
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:7:16-48
+application
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:9:5-34:19
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:9:5-34:19
+	android:extractNativeLibs
+		INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+	android:label
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:10:9-41
+	android:icon
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:9:18-47
+activity#com.droidhits.genesisdroid.Main
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:11:9-17:20
+	android:exported
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:12:78-101
+	android:theme
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:12:19-77
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:11:19-39
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:13:13-16:29
+action#android.intent.action.MAIN
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:14:17-69
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:14:25-66
+category#android.intent.category.LAUNCHER
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:15:17-77
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:15:27-74
+activity#com.droidhits.genesisdroid.FileChooser
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:19:9-84
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:19:19-72
+activity#com.droidhits.genesisdroid.SettingsActivity
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:20:9-89
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:20:19-77
+activity#com.droidhits.genesisdroid.KeyboardConfigActivity
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:21:3-22:53
+	android:configChanges
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:22:6-41
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:21:13-77
+activity#com.droidhits.genesisdroid.InputConfigActivity
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:23:9-26:59
+	android:screenOrientation
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:25:18-55
+	android:configChanges
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:26:12-47
+	android:theme
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:24:12-70
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:23:19-80
+activity#com.droidhits.genesisdroid.EmuActivity
+ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:27:9-32:90
+	android:screenOrientation
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:29:12-49
+	android:multiprocess
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:32:50-78
+	android:noHistory
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:31:12-37
+	android:configChanges
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:30:12-78
+	android:alwaysRetainTaskState
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:32:12-49
+	android:theme
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:28:12-70
+	android:name
+		ADDED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml:27:19-72
+uses-sdk
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from F:\DeepSeek\Cpp\DroidGEN\AndroidManifest.xml

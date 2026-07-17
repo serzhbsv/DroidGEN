@@ -1,0 +1,100 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.droidhits.genesisdroid-mergeDebugResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "F:\\DeepSeek\\Cpp\\DroidGEN\\res\\values\\array.xml",
+                    "from": {
+                        "startLines": "18,32,38,4,11",
+                        "startColumns": "4,4,1,4,4",
+                        "startOffsets": "392,715,941,57,222",
+                        "endLines": "30,35,41,9,16",
+                        "endColumns": "19,19,19,19,19",
+                        "endOffsets": "703,863,1064,216,382"
+                    },
+                    "to": {
+                        "startLines": "2,15,19,23,29",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,371,524,652,816",
+                        "endLines": "14,18,22,28,34",
+                        "endColumns": "19,19,19,19,19",
+                        "endOffsets": "366,519,647,811,976"
+                    }
+                },
+                {
+                    "source": "F:\\DeepSeek\\Cpp\\DroidGEN\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "10,7,4,3,8,5,2,6,9",
+                        "startColumns": "4,4,4,1,4,4,1,4,4",
+                        "startOffsets": "472,316,161,119,367,207,52,263,416",
+                        "endColumns": "74,50,45,38,48,55,66,52,55",
+                        "endOffsets": "542,362,202,156,411,258,117,311,467"
+                    },
+                    "to": {
+                        "startLines": "47,48,49,50,51,52,53,54,55",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "1507,1582,1633,1679,1721,1770,1826,1896,1949",
+                        "endColumns": "74,50,45,41,48,55,69,52,55",
+                        "endOffsets": "1577,1628,1674,1716,1765,1821,1891,1944,2000"
+                    }
+                },
+                {
+                    "source": "F:\\DeepSeek\\Cpp\\DroidGEN\\res\\values\\attrs.xml",
+                    "from": {
+                        "startLines": "3",
+                        "startColumns": "1",
+                        "startOffsets": "54",
+                        "endLines": "6",
+                        "endColumns": "21",
+                        "endOffsets": "235"
+                    },
+                    "to": {
+                        "startLines": "59",
+                        "startColumns": "4",
+                        "startOffsets": "2166",
+                        "endLines": "62",
+                        "endColumns": "21",
+                        "endOffsets": "2345"
+                    }
+                },
+                {
+                    "source": "F:\\DeepSeek\\Cpp\\DroidGEN\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "57",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "215"
+                    },
+                    "to": {
+                        "startLines": "56",
+                        "startColumns": "4",
+                        "startOffsets": "2005",
+                        "endLines": "58",
+                        "endColumns": "12",
+                        "endOffsets": "2161"
+                    }
+                },
+                {
+                    "source": "F:\\DeepSeek\\Cpp\\DroidGEN\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "12,11,6,8,10,13,5,9,7,2,4,3",
+                        "startColumns": "1,1,1,1,1,1,1,1,1,1,1,1",
+                        "startOffsets": "456,411,220,299,371,502,178,335,257,52,133,90",
+                        "endColumns": "44,43,36,35,39,41,41,35,41,37,44,42",
+                        "endOffsets": "499,453,255,333,409,542,218,369,297,88,176,131"
+                    },
+                    "to": {
+                        "startLines": "35,36,37,38,39,40,41,42,43,44,45,46",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "981,1029,1076,1116,1155,1198,1243,1288,1327,1372,1413,1461",
+                        "endColumns": "47,46,39,38,42,44,44,38,44,40,47,45",
+                        "endOffsets": "1024,1071,1111,1150,1193,1238,1283,1322,1367,1408,1456,1502"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,120 @@
+{
+  "buildFiles": [
+    "F:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Android.mk",
+    "F:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Application.mk"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "F:\\Android\\Sdk\\ndk\\25.2.9519653\\ndk-build.cmd",
+      "NDK_PROJECT_PATH\u003dnull",
+      "APP_BUILD_SCRIPT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Android.mk",
+      "NDK_APPLICATION_MK\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Application.mk",
+      "APP_ABI\u003darm64-v8a",
+      "NDK_ALL_ABIS\u003darm64-v8a",
+      "NDK_DEBUG\u003d1",
+      "APP_PLATFORM\u003dandroid-19",
+      "NDK_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj",
+      "NDK_LIBS_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/lib",
+      "APP_CFLAGS+\u003d-std\u003dc99 -fPIC -O2 -w",
+      "APP_CPPFLAGS+\u003d-std\u003dc++11 -fPIC -O2 -w",
+      "NDK_APPLICATION_MK:\u003djni/Application.mk",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "F:\\Android\\Sdk\\ndk\\25.2.9519653\\ndk-build.cmd",
+    "NDK_PROJECT_PATH\u003dnull",
+    "APP_BUILD_SCRIPT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Android.mk",
+    "NDK_APPLICATION_MK\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Application.mk",
+    "APP_ABI\u003darm64-v8a",
+    "NDK_ALL_ABIS\u003darm64-v8a",
+    "NDK_DEBUG\u003d1",
+    "APP_PLATFORM\u003dandroid-19",
+    "NDK_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj",
+    "NDK_LIBS_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/lib",
+    "APP_CFLAGS+\u003d-std\u003dc99 -fPIC -O2 -w",
+    "APP_CPPFLAGS+\u003d-std\u003dc++11 -fPIC -O2 -w",
+    "NDK_APPLICATION_MK:\u003djni/Application.mk",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "genesis-debug-arm64-v8a": {
+      "buildCommandComponents": [
+        "F:\\Android\\Sdk\\ndk\\25.2.9519653\\ndk-build.cmd",
+        "NDK_PROJECT_PATH\u003dnull",
+        "APP_BUILD_SCRIPT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Android.mk",
+        "NDK_APPLICATION_MK\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Application.mk",
+        "APP_ABI\u003darm64-v8a",
+        "NDK_ALL_ABIS\u003darm64-v8a",
+        "NDK_DEBUG\u003d1",
+        "APP_PLATFORM\u003dandroid-19",
+        "NDK_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj",
+        "NDK_LIBS_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/lib",
+        "APP_CFLAGS+\u003d-std\u003dc99 -fPIC -O2 -w",
+        "APP_CPPFLAGS+\u003d-std\u003dc++11 -fPIC -O2 -w",
+        "NDK_APPLICATION_MK:\u003djni/Application.mk",
+        "F:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj/local/arm64-v8a/libgenesis.so"
+      ],
+      "toolchain": "toolchain-arm64-v8a",
+      "abi": "arm64-v8a",
+      "artifactName": "genesis",
+      "output": "F:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561\\obj\\local\\arm64-v8a\\libgenesis.so"
+    },
+    "gnupng-debug-arm64-v8a": {
+      "buildCommandComponents": [
+        "F:\\Android\\Sdk\\ndk\\25.2.9519653\\ndk-build.cmd",
+        "NDK_PROJECT_PATH\u003dnull",
+        "APP_BUILD_SCRIPT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Android.mk",
+        "NDK_APPLICATION_MK\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Application.mk",
+        "APP_ABI\u003darm64-v8a",
+        "NDK_ALL_ABIS\u003darm64-v8a",
+        "NDK_DEBUG\u003d1",
+        "APP_PLATFORM\u003dandroid-19",
+        "NDK_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj",
+        "NDK_LIBS_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/lib",
+        "APP_CFLAGS+\u003d-std\u003dc99 -fPIC -O2 -w",
+        "APP_CPPFLAGS+\u003d-std\u003dc++11 -fPIC -O2 -w",
+        "NDK_APPLICATION_MK:\u003djni/Application.mk",
+        "F:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj/local/arm64-v8a/libgnupng.so"
+      ],
+      "toolchain": "toolchain-arm64-v8a",
+      "abi": "arm64-v8a",
+      "artifactName": "gnupng",
+      "output": "F:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561\\obj\\local\\arm64-v8a\\libgnupng.so"
+    },
+    "zip-debug-arm64-v8a": {
+      "buildCommandComponents": [
+        "F:\\Android\\Sdk\\ndk\\25.2.9519653\\ndk-build.cmd",
+        "NDK_PROJECT_PATH\u003dnull",
+        "APP_BUILD_SCRIPT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Android.mk",
+        "NDK_APPLICATION_MK\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\jni\\Application.mk",
+        "APP_ABI\u003darm64-v8a",
+        "NDK_ALL_ABIS\u003darm64-v8a",
+        "NDK_DEBUG\u003d1",
+        "APP_PLATFORM\u003dandroid-19",
+        "NDK_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj",
+        "NDK_LIBS_OUT\u003dF:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/lib",
+        "APP_CFLAGS+\u003d-std\u003dc99 -fPIC -O2 -w",
+        "APP_CPPFLAGS+\u003d-std\u003dc++11 -fPIC -O2 -w",
+        "NDK_APPLICATION_MK:\u003djni/Application.mk",
+        "F:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561/obj/local/arm64-v8a/libzip.so"
+      ],
+      "toolchain": "toolchain-arm64-v8a",
+      "abi": "arm64-v8a",
+      "artifactName": "zip",
+      "output": "F:\\DeepSeek\\Cpp\\DroidGEN\\build\\intermediates\\cxx\\Debug\\47r54561\\obj\\local\\arm64-v8a\\libzip.so"
+    }
+  },
+  "toolchains": {
+    "toolchain-arm64-v8a": {
+      "cCompilerExecutable": "F:\\Android\\Sdk\\ndk\\25.2.9519653\\build\\..\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "F:\\Android\\Sdk\\ndk\\25.2.9519653\\build\\..\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}
