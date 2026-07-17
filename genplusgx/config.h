@@ -20,6 +20,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  ***************************************************************************/
+ #include <stdint.h>
+#include "types.h"   // ДОБАВИТЬ
+
+
 
 #ifndef ___CONFIG_H_
 #define ___CONFIG_H_
@@ -110,8 +114,9 @@ typedef struct
 } t_config;
 
 /* Global data */
-t_config config;
 
+// ... в конце файла:
+extern t_config config;   // БЫЛО: t_config config;
 
 extern void config_save(void);
 extern void config_default(void);

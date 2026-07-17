@@ -16,9 +16,11 @@ public class Emulator
      // load our native library
 	static
 	{
-       System.loadLibrary("gnupng");	     
-	   System.loadLibrary("zip");
-	   System.loadLibrary("genesis");	   
+      
+    System.loadLibrary("zip");      // 1. Сначала зависимости
+    System.loadLibrary("gnupng");   // 2. Потом gnupng
+    System.loadLibrary("genesis");  // 3. И только потом основная
+  
 	}	
 	
 	// lock instantiation

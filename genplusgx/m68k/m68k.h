@@ -175,7 +175,7 @@ typedef struct
   void (*write16)(unsigned int address, unsigned int data);
 } _m68k_memory_map;
 
-_m68k_memory_map m68k_memory_map[256];
+extern _m68k_memory_map m68k_memory_map[256];
 
 
 /* Read data immediately following the PC */

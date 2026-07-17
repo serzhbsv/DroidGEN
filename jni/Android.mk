@@ -18,6 +18,11 @@ include $(call all-makefiles-under,$(LOCAL_PATH))
 # BUILD EMU LIB
 include $(CLEAR_VARS)
 LOCAL_PATH := $(ORG_PATH)/
+# После LOCAL_PATH и CLEAR_VARS добавить:
+LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__ -w
+LOCAL_CPPFLAGS := -std=c++11 -fPIC -O2 -DANDROID -D__ANDROID__ -w
+LOCAL_LDFLAGS := -fPIC
+LOCAL_LDLIBS := -llog -lz -lGLESv1_CM
 LOCAL_MODULE_TAGS := user
 LOCAL_ARM_MODE := arm
 LOCAL_MODULE := libgenesis
@@ -63,7 +68,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../ \
 
 	   
 # Debug
-LOCAL_CFLAGS := -DLOG_TAG=\"DroidGEN\"
+
 ifeq ($(ENABLE_DEBUG), 1)
 	# DEBUG FLAGS
 	LOCAL_CFLAGS += -g
@@ -101,18 +106,6 @@ LOCAL_CFLAGS += -DHALDROID
 # FCEU Flags
 LOCAL_CFLAGS += -DLSB_FIRST -DFRAMESKIP -DMAXPATHLEN=1024 $(MACHDEP)
 
-     
-# C99
-LOCAL_CFLAGS += -std=c99     
-
-
-# Copy C Flags to CXX flags
-LOCAL_CPPFLAGS := $(LOCAL_CFLAGS)
-LOCAL_CXXFLAGS := $(LOCAL_CFLAGS)
-     
-
-# Native libs to link to
-LOCAL_LDLIBS := -lz -llog -lGLESv2 
 
 
 # All of the shared libraries we link against.

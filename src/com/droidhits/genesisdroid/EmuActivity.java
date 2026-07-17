@@ -105,81 +105,64 @@ public class EmuActivity extends Activity
 
      
      @Override
-     public boolean onOptionsItemSelected(MenuItem item)
-     {
-          switch (item.getItemId())
-          {
-               /*
-                * case R.id.menuShowKeyboard: InputMethodManager inputMgr =
-                * (InputMethodManager
-                * )getSystemService(Context.INPUT_METHOD_SERVICE);
-                * inputMgr.showSoftInput(_view, InputMethodManager.SHOW_FORCED);
-                * //inputMgr.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                * InputMethodManager.HIDE_IMPLICIT_ONLY); return true;
-                */
-               /*
-                * case R.id.menuExit: Intent intent = new Intent();
-                * setResult(RESULT_OK, intent);
-                * 
-                * this.finish();
-                * 
-                * return true;
-                */
-               case R.id.menuMenu:
-                    this.finish();
-                    return true;
-               case R.id.menuSettings:
-                    spawnSettings();
-                    return true;
-               case R.id.menuLoadROM:
-                    spawnFileChooser();
-                    return true;
-               case R.id.menuSelectState:
-                    return true;
-               case R.id.menuLoadState:
-                    Emulator.loadState(_currentSaveState);
-                    return true;
-               case R.id.menuSaveState:
-                    Emulator.saveState(_currentSaveState);
-                    return true;
-               case R.id.menuResetGame:
-                    Emulator.resetGame();
-                    return true;
-               case R.id.menuState0:
-                    _currentSaveState = 0;
-                    return true;
-               case R.id.menuState1:
-                    _currentSaveState = 1;
-                    return true;
-               case R.id.menuState2:
-                    _currentSaveState = 2;
-                    return true;
-               case R.id.menuState3:
-                    _currentSaveState = 3;
-                    return true;
-               case R.id.menuState4:
-                    _currentSaveState = 4;
-                    return true;
-               case R.id.menuState5:
-                    _currentSaveState = 5;
-                    return true;
-               case R.id.menuState6:
-                    _currentSaveState = 6;
-                    return true;
-               case R.id.menuState7:
-                    _currentSaveState = 7;
-                    return true;
-               case R.id.menuState8:
-                    _currentSaveState = 8;
-                    return true;
-               case R.id.menuState9:
-                    _currentSaveState = 9;
-                    return true;
-               default:
-                    return super.onOptionsItemSelected(item);
-          }
-     }
-
+public boolean onOptionsItemSelected(MenuItem item)
+{
+    int id = item.getItemId();
+    
+    if (id == R.id.menuMenu) {
+        this.finish();
+        return true;
+    } else if (id == R.id.menuSettings) {
+        spawnSettings();
+        return true;
+    } else if (id == R.id.menuLoadROM) {
+        spawnFileChooser();
+        return true;
+    } else if (id == R.id.menuSelectState) {
+        return true;
+    } else if (id == R.id.menuLoadState) {
+        Emulator.loadState(_currentSaveState);
+        return true;
+    } else if (id == R.id.menuSaveState) {
+        Emulator.saveState(_currentSaveState);
+        return true;
+    } else if (id == R.id.menuResetGame) {
+        Emulator.resetGame();
+        return true;
+    } else if (id == R.id.menuState0) {
+        _currentSaveState = 0;
+        return true;
+    } else if (id == R.id.menuState1) {
+        _currentSaveState = 1;
+        return true;
+    } else if (id == R.id.menuState2) {
+        _currentSaveState = 2;
+        return true;
+    } else if (id == R.id.menuState3) {
+        _currentSaveState = 3;
+        return true;
+    } else if (id == R.id.menuState4) {
+        _currentSaveState = 4;
+        return true;
+    } else if (id == R.id.menuState5) {
+        _currentSaveState = 5;
+        return true;
+    } else if (id == R.id.menuState6) {
+        _currentSaveState = 6;
+        return true;
+    } else if (id == R.id.menuState7) {
+        _currentSaveState = 7;
+        return true;
+    } else if (id == R.id.menuState8) {
+        _currentSaveState = 8;
+        return true;
+    } else if (id == R.id.menuState9) {
+        _currentSaveState = 9;
+        return true;
+    } else {
+        return super.onOptionsItemSelected(item);
+    }
+}
 
      protected void spawnFileChooser()
      {

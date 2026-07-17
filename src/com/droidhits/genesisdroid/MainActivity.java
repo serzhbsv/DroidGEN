@@ -162,7 +162,9 @@ public class MainActivity extends Activity
                PackageManager packMgmr = this.getPackageManager();
                try
                {
-                    appInfo = packMgmr.getApplicationInfo(getString(R.string.package_name), 0);
+                   
+                     // Стало:
+                           appInfo = packMgmr.getApplicationInfo("com.droidhits.genesisdroid", 0);
                } 
                catch (NameNotFoundException e)
                {
