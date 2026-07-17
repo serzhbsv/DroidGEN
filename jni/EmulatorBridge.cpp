@@ -4,6 +4,11 @@
 
 #include <android/log.h>
 
+#define LOG_TAG "DroidGEN"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
+
 #include "common.h"
 #include "GraphicsDriver.h"
 #include "Application.h"
@@ -62,6 +67,7 @@ JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_setPaths
 JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_init
    (JNIEnv* env, jclass cls, jstring apkAbsolutePath)
 {
+	    LOGD("=== Emulator_init() START ===");  // <-- ЭТО ДОЛЖНО ПОЯВИТЬСЯ В ЛОГАХ
     __android_log_print(ANDROID_LOG_DEBUG, "DroidGEN", "=== Emulator_init() START ===");
 
     if (env == NULL) {

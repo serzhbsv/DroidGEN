@@ -19,10 +19,18 @@ include $(call all-makefiles-under,$(LOCAL_PATH))
 include $(CLEAR_VARS)
 LOCAL_PATH := $(ORG_PATH)/
 # ============ ФЛАГИ КОМПИЛЯЦИИ ============
-LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__ -w
-LOCAL_CPPFLAGS := -std=c++11 -fPIC -O2 -DANDROID -D__ANDROID__ -w
+# BUILD EMU LIB
+include $(CLEAR_VARS)
+LOCAL_PATH := $(ORG_PATH)/
+
+# ============ ЭТО МЕСТО ============
+# Здесь должны быть эти строки:
+LOCAL_CFLAGS := -std=c99 -O0 -g -fPIC -DANDROID -D__ANDROID__ -w
+LOCAL_CPPFLAGS := -std=c++11 -O0 -g -fPIC -DANDROID -D__ANDROID__ -w
 LOCAL_LDFLAGS := -fPIC
 LOCAL_LDLIBS := -llog -lz -lGLESv2 -lGLESv1_CM
+# ===================================
+
 # ==========================================
 LOCAL_MODULE_TAGS := user
 LOCAL_ARM_MODE := arm

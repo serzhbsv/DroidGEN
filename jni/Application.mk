@@ -8,8 +8,12 @@ APP_OPTIM := release
 #APP_STL := gnustl_static
 #APP_STL := stlport_static
 
-TARGET_PLATFORM := android-9
-
+APP_ABI := armeabi-v7a arm64-v8a
+APP_PLATFORM := android-19
+APP_CFLAGS := -std=c99 -O0 -g -fPIC -w
+APP_CPPFLAGS := -std=c++11 -O0 -g -fPIC -w
+APP_LDFLAGS := -fPIC
+APP_STL := c++_static
 #APP_ABI := armeabi
 APP_ABI := armeabi-v7a
 
