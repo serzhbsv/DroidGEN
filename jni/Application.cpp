@@ -118,6 +118,18 @@ int Application::setPaths(const char* externalStorageDir, const char* romDir,
 
 int Application::init(JNIEnv *env, const char * apkAbsolutePath)
 {
+	// ДОБАВЬТЕ ЭТИ СТРОКИ САМЫМИ ПЕРВЫМИ:
+    if (apkAbsolutePath == NULL) {
+        LOGE("Application::init() - apkAbsolutePath is NULL!");
+        return -1;
+    }
+    
+    if (strlen(apkAbsolutePath) == 0) {
+        LOGE("Application::init() - apkAbsolutePath is empty!");
+        return -1;
+    }
+    
+    LOGD("Application::init() - APK path: %s", apkAbsolutePath);
     LOGD("APK_PATH: %s", apkAbsolutePath);
 
     if (apkAbsolutePath == NULL || strlen(apkAbsolutePath) >= MAX_PATH) {
