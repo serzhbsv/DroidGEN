@@ -14,14 +14,12 @@ package com.droidhits.genesisdroid;
 public class Emulator
 {	
      // load our native library
-	static
-	{
-      
-    System.loadLibrary("zip");      // 1. Сначала зависимости
-    System.loadLibrary("gnupng");   // 2. Потом gnupng
-    System.loadLibrary("genesis");  // 3. И только потом основная
-  
-	}	
+	static {
+    System.loadLibrary("zip");
+    System.loadLibrary("gnupng");
+    System.loadLibrary("genesis");
+}
+
 	
 	// lock instantiation
 	private Emulator()
