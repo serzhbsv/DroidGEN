@@ -18,11 +18,12 @@ include $(call all-makefiles-under,$(LOCAL_PATH))
 # BUILD EMU LIB
 include $(CLEAR_VARS)
 LOCAL_PATH := $(ORG_PATH)/
-# После LOCAL_PATH и CLEAR_VARS добавить:
+# ============ ФЛАГИ КОМПИЛЯЦИИ ============
 LOCAL_CFLAGS := -std=c99 -fPIC -O2 -DANDROID -D__ANDROID__ -w
 LOCAL_CPPFLAGS := -std=c++11 -fPIC -O2 -DANDROID -D__ANDROID__ -w
 LOCAL_LDFLAGS := -fPIC
-LOCAL_LDLIBS := -llog -lz -lGLESv1_CM
+LOCAL_LDLIBS := -llog -lz -lGLESv2 -lGLESv1_CM
+# ==========================================
 LOCAL_MODULE_TAGS := user
 LOCAL_ARM_MODE := arm
 LOCAL_MODULE := libgenesis
