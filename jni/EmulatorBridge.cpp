@@ -62,18 +62,25 @@ JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_init
    (JNIEnv* env, jclass cls, jstring apkAbsolutePath)
 {
     LOGD("Emulator_init()");
+
+    // Проверяем, что путь передан
     if (apkAbsolutePath == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, "DroidGEN", "Emulator.init() called with NULL path!");
         return -1;
     }
+
     jboolean isCopy;
     const char * szFilename = env->GetStringUTFChars(apkAbsolutePath, &isCopy);
+
     if (szFilename == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, "DroidGEN", "Failed to convert path to UTF-8!");
         return -1;
     }
+
     int retVal = Emulator.init(env, szFilename);
+
     env->ReleaseStringUTFChars(apkAbsolutePath, szFilename);
+
     return retVal;
 }
 

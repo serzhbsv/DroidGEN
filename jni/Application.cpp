@@ -118,81 +118,84 @@ int Application::setPaths(const char* externalStorageDir, const char* romDir,
 
 int Application::init(JNIEnv *env, const char * apkAbsolutePath)
 {
-     LOGD("APK_PATH: %s", apkAbsolutePath);
+    LOGD("APK_PATH: %s", apkAbsolutePath);
 
-     // TODO: setup genesis directories
+    if (apkAbsolutePath == NULL || strlen(apkAbsolutePath) >= MAX_PATH) {
+        LOGE("Invalid APK path!");
+        return NATIVE_ERROR;
+    }
 
-     // copy dirs for storage
-     if (apkAbsolutePath == NULL || strlen(apkAbsolutePath) >= MAX_PATH)
-     {
-    	 return NATIVE_ERROR;
-     }
+    strcpy(_apkPath, apkAbsolutePath);
 
-     strcpy(_apkPath, apkAbsolutePath);
+    if (!_fceuInitialized) {
+        // Выделяем память для cart.rom
+        cart.rom = (unsigned char*)memalign(32, MAXROMSIZE);
+        if (cart.rom == NULL) {
+            LOGE("Failed to allocate cart.rom!");
+            return NATIVE_ERROR;
+        }
 
-     if (!_fceuInitialized)
-     {
-    	 // allocate cart
-    	 cart.rom = (unsigned char*)memalign(32, MAXROMSIZE);
+        // Выделяем память для bitmap.data
+        bitmap.width  = GENPLUS_RENDER_TEXTURE_WIDTH;
+        bitmap.height = GENPLUS_RENDER_TEXTURE_HEIGHT;
+        bitmap.depth  = 16;
+        bitmap.granularity = SCREEN_RENDER_BYTE_BY_PIXEL;
+        bitmap.pitch = bitmap.width * bitmap.granularity;
+        bitmap.viewport.w = GENPLUS_RENDER_TEXTURE_WIDTH;
+        bitmap.viewport.h = GENPLUS_RENDER_TEXTURE_HEIGHT;
+        bitmap.viewport.x = 0;
+        bitmap.viewport.y = 0;
+        bitmap.remap = 1;
+        bitmap.data = (unsigned char*)malloc(bitmap.width * bitmap.height * bitmap.granularity);
+        
+        if (bitmap.data == NULL) {
+            LOGE("Failed to allocate bitmap.data!");
+            free(cart.rom);
+            cart.rom = NULL;
+            return NATIVE_ERROR;
+        }
 
-    	 // load bios
-    	 //load_bios();
+        // Очищаем bitmap
+        memset(bitmap.data, 0, bitmap.width * bitmap.height * bitmap.granularity);
 
-    	 /* allocate global work bitmap */
-    	 memset (&bitmap, 0, sizeof (bitmap));
-    	 bitmap.width  = GENPLUS_RENDER_TEXTURE_WIDTH;
-    	 bitmap.height = GENPLUS_RENDER_TEXTURE_HEIGHT;
-    	 bitmap.depth  = 16;
-    	 bitmap.granularity = SCREEN_RENDER_BYTE_BY_PIXEL;
-    	 bitmap.pitch = bitmap.width * bitmap.granularity;
-    	 bitmap.viewport.w = GENPLUS_RENDER_TEXTURE_WIDTH;
-    	 bitmap.viewport.h = GENPLUS_RENDER_TEXTURE_HEIGHT;
-    	 bitmap.viewport.x = 0;
-    	 bitmap.viewport.y = 0;
-    	 bitmap.remap = 1;
-    	 bitmap.data = (unsigned char*)malloc(bitmap.width*bitmap.height*bitmap.granularity);
+        // Настройка конфигурации
+        strncpy(config.version, CONFIG_VERSION, 16);
 
-    	 // version TAG
-    	 strncpy(config.version,CONFIG_VERSION,16);
+        config.psg_preamp     = 150;
+        config.fm_preamp      = 100;
+        config.hq_fm          = 1;
+        config.psgBoostNoise  = 0;
+        config.filter         = 1;
+        config.lp_range       = 50;
+        config.low_freq       = 880;
+        config.high_freq      = 5000;
+        config.lg             = 1.0;
+        config.mg             = 1.0;
+        config.hg             = 1.0;
+        config.rolloff        = 0.995;
+        config.dac_bits       = 14;
 
-    	 // sound options
-    	 config.psg_preamp     = 150;
-    	 config.fm_preamp      = 100;
-    	 config.hq_fm          = 1;
-    	 config.psgBoostNoise  = 0;
-    	 config.filter         = 1;
-    	 config.lp_range       = 50;
-    	 config.low_freq       = 880;
-    	 config.high_freq      = 5000;
-    	 config.lg             = 1.0;
-    	 config.mg             = 1.0;
-    	 config.hg             = 1.0;
-    	 config.rolloff        = 0.995;
-    	 config.dac_bits       = 14;
+        config.region_detect  = 0;
+        config.force_dtack    = 0;
+        config.addr_error     = 0;
+        config.tmss           = 0;
+        config.lock_on        = 0;
+        config.romtype        = 0;
+        config.hot_swap       = 0;
 
-    	 // system options
-    	 config.region_detect  = 0;
-    	 config.force_dtack    = 0;
-    	 config.addr_error     = 0;
-    	 config.tmss           = 0;
-    	 config.lock_on        = 0;//Settings.ExtraCart;
-    	 config.romtype        = 0;
-    	 config.hot_swap       = 0;
+        config.xshift   = 0;
+        config.yshift   = 0;
+        config.xscale   = 0;
+        config.yscale   = 0;
+        config.aspect   = 0;
+        config.overscan = 0;
 
-    	 // video options
-    	 config.xshift   = 0;
-    	 config.yshift   = 0;
-    	 config.xscale   = 0;
-    	 config.yscale   = 0;
-    	 config.aspect   = 0; // 1 for 4:3, 2 for 16:9
-    	 config.overscan = 0;
+        _fceuInitialized = true;
+        LOGD("Application::init() completed successfully");
+    }
 
-    	 _fceuInitialized = true;
-     }
-
-     _initialized = true;
-
-     return NATIVE_OK;
+    _initialized = true;
+    return NATIVE_OK;
 }
 
 
