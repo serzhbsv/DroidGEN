@@ -64,19 +64,16 @@ JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_init
 {
     __android_log_print(ANDROID_LOG_DEBUG, "DroidGEN", "=== Emulator_init() START ===");
 
-    // Проверка 1: сам JNIEnv
     if (env == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, "DroidGEN", "Emulator_init() - JNIEnv is NULL!");
         return -1;
     }
 
-    // Проверка 2: путь к APK
     if (apkAbsolutePath == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, "DroidGEN", "Emulator_init() - apkAbsolutePath is NULL!");
         return -1;
     }
 
-    // Проверка 3: получаем строку
     const char * szFilename = env->GetStringUTFChars(apkAbsolutePath, NULL);
     if (szFilename == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, "DroidGEN", "Emulator_init() - GetStringUTFChars failed!");
@@ -85,7 +82,6 @@ JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_init
 
     __android_log_print(ANDROID_LOG_DEBUG, "DroidGEN", "Emulator_init() - APK path: %s", szFilename);
 
-    // Проверка 4: вызываем инициализацию
     int retVal = Emulator.init(env, szFilename);
     __android_log_print(ANDROID_LOG_DEBUG, "DroidGEN", "Emulator_init() - Emulator.init returned: %d", retVal);
 

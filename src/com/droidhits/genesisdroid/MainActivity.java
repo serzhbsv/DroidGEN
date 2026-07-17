@@ -172,7 +172,10 @@ public class MainActivity extends Activity
                     throw new RuntimeException("Unable to locate assets, aborting...");
                }
                String _apkPath = appInfo.sourceDir;                                                       
-
+int result = Emulator.init(getApplicationContext().getPackageCodePath());
+if (result != 0) {
+    Log.e("DroidGEN", "Emulator.init() failed with code: " + result);
+}
                // init the emulator
                Emulator.init(_apkPath);
                
