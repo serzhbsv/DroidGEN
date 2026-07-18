@@ -49,8 +49,15 @@ jobs:
 
     - name: Increment version code
       run: |
-         sed -i 's/versionCode [0-9]*/versionCode '$((RANDOM%1000+1))'/' build.gradle
-
+        if grep -q "versionCode" build.gradle; then
+        OLD_CODE=$(grep -o "versionCode [0-9]*" build.gradle | head -1 | awk '{print $2}')
+        NEW_CODE=$((OLD_CODE + 1))
+        echo "Version code: $OLD_CODE -> $NEW_CODE"
+        sed -i "s/versionCode $OLD_CODE/versionCode $NEW_CODE/" build.gradle
+        else
+        echo "WARNING: versionCode not found in build.gradle"
+        fi
+        
     # ============ ИСПРАВЛЕНИЕ: CLOCK_REALTIME_HR ============
     - name: Fix CLOCK_REALTIME_HR in native code
       run: |
