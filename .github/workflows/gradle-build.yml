@@ -37,14 +37,14 @@ jobs:
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    # ============ СОХРАНЯЕМ КЛЮЧ ============
-    - name: Check and save debug keystore
+    # ============ КЛЮЧ ДЛЯ ПОДПИСИ ============
+    - name: Setup debug keystore
       run: |
-        # Проверяем, есть ли сохранённый ключ в репозитории
+        # Проверяем, есть ли ключ в репозитории
         if [ -f debug.keystore ]; then
-          echo "✅ Keystore found in repository"
+          echo "✅ Using existing debug.keystore"
         else
-          echo "🔄 Generating new debug keystore..."
+          echo "🔄 Generating new debug.keystore"
           keytool -genkey -v -keystore debug.keystore \
             -alias androiddebugkey -keyalg RSA -keysize 2048 \
             -validity 10000 -dname "CN=Android Debug, O=Android, C=US" \
@@ -55,6 +55,14 @@ jobs:
         mkdir -p ~/.android
         cp debug.keystore ~/.android/debug.keystore
 
+    - name: Upload debug keystore as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-keystore
+        path: debug.keystore
+        retention-days: 30
+
+    # ============ СБОРКА ============
     - name: Fix CLOCK_REALTIME_HR in native code
       run: |
         find jni -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
@@ -68,10 +76,15 @@ jobs:
           sed -i "s/versionCode $OLD_CODE/versionCode $NEW_CODE/" build.gradle
         fi
 
+    - name: Clean build cache
+      run: |
+        rm -rf build/intermediates/cxx
+        rm -rf .cxx
+
     - name: Build with Gradle
       run: |
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+        ./gradlew clean assembleDebug --no-daemon
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
