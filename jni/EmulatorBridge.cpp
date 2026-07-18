@@ -46,20 +46,38 @@ JNIEXPORT void JNICALL Java_com_droidhits_genesisdroid_Emulator_destroy
 JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_setPaths
   (JNIEnv *env, jclass, jstring extStorageDir, jstring romDir, jstring stateDir, jstring sramDir, jstring cheatsDir)
 {
-	jboolean isCopy = false;
+    LOGD("=== setPaths() START ===");
+    
+    // Проверка каждого аргумента
+    if (extStorageDir == NULL || romDir == NULL || stateDir == NULL || sramDir == NULL || cheatsDir == NULL) {
+        LOGE("setPaths() - one or more arguments are NULL!");
+        return -1;
+    }
+
+    jboolean isCopy = false;
     const char * szExternalStorage = env->GetStringUTFChars(extStorageDir, &isCopy);
     const char * szRomDir = env->GetStringUTFChars(romDir, &isCopy);
     const char * szStateDir = env->GetStringUTFChars(stateDir, &isCopy);
     const char * szSramDir = env->GetStringUTFChars(sramDir, &isCopy);
     const char * szCheatsDir = env->GetStringUTFChars(cheatsDir, &isCopy);
 
+    LOGD("setPaths() - extStorage: %s", szExternalStorage ? szExternalStorage : "NULL");
+    LOGD("setPaths() - romDir: %s", szRomDir ? szRomDir : "NULL");
+    LOGD("setPaths() - stateDir: %s", szStateDir ? szStateDir : "NULL");
+    LOGD("setPaths() - sramDir: %s", szSramDir ? szSramDir : "NULL");
+    LOGD("setPaths() - cheatsDir: %s", szCheatsDir ? szCheatsDir : "NULL");
+
     int retVal = Emulator.setPaths(szExternalStorage, szRomDir, szStateDir, szSramDir, szCheatsDir);
+    LOGD("setPaths() - retVal: %d", retVal);
 
     env->ReleaseStringUTFChars(extStorageDir, szExternalStorage);
     env->ReleaseStringUTFChars(romDir, szRomDir);
     env->ReleaseStringUTFChars(stateDir, szStateDir);
     env->ReleaseStringUTFChars(sramDir, szSramDir);
     env->ReleaseStringUTFChars(cheatsDir, szCheatsDir);
+
+    LOGD("=== setPaths() END ===");
+    return retVal;
 }
 
 

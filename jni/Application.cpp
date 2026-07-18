@@ -86,33 +86,32 @@ static void load_bios(void)
 
 
 int Application::setPaths(const char* externalStorageDir, const char* romDir,
-	 	 	 	 	 	 	 const char* stateDir, const char* sramDir,
-	 	 	 	 	 	 	 const char* cheatsDir)
+                          const char* stateDir, const char* sramDir,
+                          const char* cheatsDir)
 {
-	LOGD("EXTERNAL_STORAGE_DIR: %s", externalStorageDir);
-	LOGD("ROM_DIR: %s", romDir);
-	LOGD("STATE_DIR: %s", stateDir);
-	LOGD("SRAM_DIR: %s", sramDir);
-	LOGD("CHEATS_DIR: %s", cheatsDir);
+    LOGD("=== Application::setPaths() START ===");
 
-	if (externalStorageDir == NULL || strlen(externalStorageDir) >= MAX_PATH)
-	{
-		return NATIVE_ERROR;
-	}
+    if (externalStorageDir == NULL || romDir == NULL || stateDir == NULL || sramDir == NULL || cheatsDir == NULL) {
+        LOGE("setPaths() - one or more arguments are NULL!");
+        return NATIVE_ERROR;
+    }
 
-	if (stateDir == NULL || strlen(stateDir) >= MAX_PATH)
-	{
-		return NATIVE_ERROR;
-	}
+    LOGD("EXTERNAL_STORAGE_DIR: %s", externalStorageDir);
+    LOGD("ROM_DIR: %s", romDir);
+    LOGD("STATE_DIR: %s", stateDir);
+    LOGD("SRAM_DIR: %s", sramDir);
+    LOGD("CHEATS_DIR: %s", cheatsDir);
 
-	strcpy(_stateDir, stateDir);
+    if (strlen(externalStorageDir) >= MAX_PATH || strlen(stateDir) >= MAX_PATH || strlen(sramDir) >= MAX_PATH) {
+        LOGE("setPaths() - path too long!");
+        return NATIVE_ERROR;
+    }
 
-	if (sramDir == NULL || strlen(sramDir) >= MAX_PATH)
-	{
-		return NATIVE_ERROR;
-	}
+    strcpy(_stateDir, stateDir);
+    strcpy(_sramDir, sramDir);
 
-	strcpy(_sramDir, sramDir);
+    LOGD("=== Application::setPaths() END ===");
+    return NATIVE_OK;
 }
 
 

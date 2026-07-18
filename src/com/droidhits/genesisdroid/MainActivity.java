@@ -41,7 +41,18 @@ public class MainActivity extends Activity
      public void onCreate(Bundle savedInstanceState)
      {
           Log.d(LOG_TAG, "onCreate()");
-          
+              // 1. СНАЧАЛА установить пути
+    Emulator.setPaths(
+        getApplicationContext().getFilesDir().getAbsolutePath(),
+        Preferences.getRomDir(getApplicationContext()),
+        Preferences.getStateDir(getApplicationContext()),
+        Preferences.getSramDir(getApplicationContext()),
+        Preferences.getCheatsDir(getApplicationContext())
+    );
+
+    // 2. ПОТОМ инициализировать эмулятор
+    String apkPath = getApplicationContext().getPackageCodePath();
+    Emulator.init(apkPath);
           super.onCreate(savedInstanceState);         
 
           System.gc();
