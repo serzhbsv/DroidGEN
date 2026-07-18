@@ -35,8 +35,8 @@ public class Preferences
      public static final String DEFAULT_DIR_SRAM = DEFAULT_DIR + "/sram";
      public static final String DEFAULT_DIR_CHEATS = DEFAULT_DIR + "/cheats";
      public static final String DEFAULT_DIR_TEMPFILES = DEFAULT_DIR + "/temp";
-     public static final String DEFAULT_ROM_EXTENSIONS = "smd|gen|bin|sms|zip";
-     
+   //  public static final String DEFAULT_ROM_EXTENSIONS = "smd|gen|bin|sms|zip";
+     public static final String DEFAULT_ROM_EXTENSIONS = ".*";
      public static final String PREF_DIR_ROMS = "prefRomDir";
      public static final String PREF_DIR_STATES = "prefStatesDir";
      public static final String PREF_DIR_SRAM = "prefSramDir";
