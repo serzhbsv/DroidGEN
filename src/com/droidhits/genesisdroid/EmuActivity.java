@@ -29,6 +29,15 @@ public class EmuActivity extends Activity
      @Override
      public void onCreate(Bundle savedInstanceState)
      {
+     	try {
+        // Проверяем загрузку библиотек
+        System.loadLibrary("zip");
+        System.loadLibrary("gnupng");
+        System.loadLibrary("genesis");
+        Log.d("DroidGEN", "All libraries loaded successfully!");
+    } catch (UnsatisfiedLinkError e) {
+        Log.e("DroidGEN", "Failed to load libraries!", e);
+    }
           Log.d(LOG_TAG, "onCreate()");
 
           super.onCreate(savedInstanceState);
