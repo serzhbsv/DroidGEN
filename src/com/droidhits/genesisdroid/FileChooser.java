@@ -155,15 +155,15 @@ public class FileChooser extends Activity //implements DecompressListener
                  }
                  else
                  {
-                      int dotIndex = ff.getName().lastIndexOf('.');
-                      if (dotIndex > 0)
-                      {
-                           String extension = ff.getName().substring(dotIndex+1).toLowerCase();
-                           if (extension.matches(_extensions))
-                           {
+                 //     int dotIndex = ff.getName().lastIndexOf('.');
+                   //   if (dotIndex > 0)
+                      //{
+                         //  String extension = ff.getName().substring(dotIndex+1).toLowerCase();
+                          // if (extension.matches(_extensions))
+                        //   {
                                 fls.add(new Option(ff.getName(),"File Size: "+ff.length(),ff.getAbsolutePath()));
-                           }
-                      }
+                        //   }
+                   //   }
                  }
               }
           }
