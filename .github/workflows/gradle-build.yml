@@ -40,7 +40,6 @@ jobs:
     # ============ КЛЮЧ ДЛЯ ПОДПИСИ ============
     - name: Setup debug keystore
       run: |
-        # Проверяем, есть ли ключ в репозитории
         if [ -f debug.keystore ]; then
           echo "✅ Using existing debug.keystore"
         else
@@ -50,8 +49,6 @@ jobs:
             -validity 10000 -dname "CN=Android Debug, O=Android, C=US" \
             -storepass android -keypass android
         fi
-        
-        # Копируем в системную папку
         mkdir -p ~/.android
         cp debug.keystore ~/.android/debug.keystore
 
@@ -86,6 +83,7 @@ jobs:
         chmod +x gradlew
         ./gradlew clean assembleDebug --no-daemon
 
+    # ============ СОХРАНЯЕМ APK ============
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
