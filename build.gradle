@@ -25,6 +25,7 @@ android {
     applicationId "com.droidhits.genesisdroid"
     minSdk 19
     targetSdk 34
+    ndkVersion '25.2.9519653'
     versionCode 1        // <-- ТОЛЬКО ЗДЕСЬ
     versionName "1.0"    // <-- ТОЛЬКО ЗДЕСЬ
         
