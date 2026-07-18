@@ -1,10 +1,6 @@
 name: Build DroidGEN with Gradle
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -41,27 +37,36 @@ jobs:
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    # ============ ОЧИСТКА КЭША ============
-    - name: Clean build cache
+    # ============ СОХРАНЯЕМ КЛЮЧ ============
+    - name: Check and save debug keystore
       run: |
-        rm -rf build/intermediates/cxx
-        rm -rf .cxx
+        # Проверяем, есть ли сохранённый ключ в репозитории
+        if [ -f debug.keystore ]; then
+          echo "✅ Keystore found in repository"
+        else
+          echo "🔄 Generating new debug keystore..."
+          keytool -genkey -v -keystore debug.keystore \
+            -alias androiddebugkey -keyalg RSA -keysize 2048 \
+            -validity 10000 -dname "CN=Android Debug, O=Android, C=US" \
+            -storepass android -keypass android
+        fi
+        
+        # Копируем в системную папку
+        mkdir -p ~/.android
+        cp debug.keystore ~/.android/debug.keystore
+
+    - name: Fix CLOCK_REALTIME_HR in native code
+      run: |
+        find jni -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
 
     - name: Increment version code
       run: |
         if grep -q "versionCode" build.gradle; then
-        OLD_CODE=$(grep -o "versionCode [0-9]*" build.gradle | head -1 | awk '{print $2}')
-        NEW_CODE=$((OLD_CODE + 1))
-        echo "Version code: $OLD_CODE -> $NEW_CODE"
-        sed -i "s/versionCode $OLD_CODE/versionCode $NEW_CODE/" build.gradle
-        else
-        echo "WARNING: versionCode not found in build.gradle"
+          OLD_CODE=$(grep -o "versionCode [0-9]*" build.gradle | head -1 | awk '{print $2}')
+          NEW_CODE=$((OLD_CODE + 1))
+          echo "Version code: $OLD_CODE -> $NEW_CODE"
+          sed -i "s/versionCode $OLD_CODE/versionCode $NEW_CODE/" build.gradle
         fi
-        
-    # ============ ИСПРАВЛЕНИЕ: CLOCK_REALTIME_HR ============
-    - name: Fix CLOCK_REALTIME_HR in native code
-      run: |
-        find jni -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -exec sed -i 's/CLOCK_REALTIME_HR/CLOCK_REALTIME/g' {} \;
 
     - name: Build with Gradle
       run: |
