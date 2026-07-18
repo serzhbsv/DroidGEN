@@ -47,8 +47,8 @@ jobs:
         rm -rf build/intermediates/cxx
         rm -rf .cxx
 
-     - name: Increment version code
-       run: |
+    - name: Increment version code
+      run: |
          sed -i 's/versionCode [0-9]*/versionCode '$((RANDOM%1000+1))'/' app/build.gradle
 
     # ============ ИСПРАВЛЕНИЕ: CLOCK_REALTIME_HR ============
