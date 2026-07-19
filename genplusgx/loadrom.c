@@ -20,7 +20,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  ****************************************************************************************/
+// В начале loadrom.c после других #include
+#include <android/log.h>
 
+#define LOG_TAG "DroidGEN"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 #include <ctype.h>
 #include "shared.h"
 
