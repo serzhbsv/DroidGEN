@@ -372,8 +372,63 @@ void Application::resetROM()
 }
 
 
+
 int Application::loadROM(const char* filename)
 {
+    LOGD("=== Application::loadROM() START ===");
+    
+    if (filename == NULL || strlen(filename) == 0) {
+        LOGE("loadROM() - filename is NULL or empty!");
+        return NATIVE_ERROR;
+    }
+    
+    LOGD("filename: %s", filename);
+    
+    // Проверка cart.rom
+    if (cart.rom == NULL) {
+        LOGE("loadROM() - cart.rom is NULL!");
+        return NATIVE_ERROR;
+    }
+    LOGD("cart.rom allocated at: %p", cart.rom);
+    
+    // Проверка существования файла
+    FILE* testFile = fopen(filename, "rb");
+    if (testFile == NULL) {
+        LOGE("loadROM() - file does not exist!");
+        return NATIVE_ERROR;
+    }
+    fclose(testFile);
+    LOGD("File exists!");
+    
+    if (_romLoaded) {
+        LOGD("Saving SRAM...");
+        saveSRam(_sramDir);
+        _romLoaded = false;
+    }
+    
+    LOGD("Calling load_rom()...");
+    if (!load_rom((char*)filename)) {
+        LOGE("load_rom() failed!");
+        return NATIVE_ERROR;
+    }
+    LOGD("load_rom() succeeded!");
+    
+    if (_currentRom == NULL) {
+        LOGE("_currentRom is NULL!");
+        return NATIVE_ERROR;
+    }
+    strcpy(_currentRom, filename);
+    
+
+
+
+
+
+
+
+
+
+
     LOGD("=== Application::loadROM() START ===");
     
     // Проверка 1: filename
