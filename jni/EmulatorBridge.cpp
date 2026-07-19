@@ -115,6 +115,46 @@ JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_init
     return retVal;
 }
 
+JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_loadRom
+  (JNIEnv *env, jclass obj, jstring fileName)
+{
+    LOGD("=== Emulator_loadROM() START ===");
+    
+    if (fileName == NULL) {
+        LOGE("loadRom() - fileName is NULL!");
+        return -1;
+    }
+    
+    jboolean isCopy;
+    const char * szFilename = env->GetStringUTFChars(fileName, &isCopy);
+    
+    if (szFilename == NULL) {
+        LOGE("loadRom() - GetStringUTFChars failed!");
+        return -1;
+    }
+    
+    LOGD("ROM path: %s", szFilename);
+    
+    int retVal = Emulator.loadROM(szFilename);
+    LOGD("Emulator.loadROM() returned: %d", retVal);
+    
+    env->ReleaseStringUTFChars(fileName, szFilename);
+    
+    LOGD("=== Emulator_loadROM() END ===");
+    return retVal;
+}
+
+JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_initGraphics
+  (JNIEnv* env, jclass cls)
+{
+    LOGD("=== Emulator_initGraphics() START ===");
+    int result = Emulator.initGraphics();
+    LOGD("Emulator.initGraphics() result: %d", result);
+    Emulator.Graphics.InitEmuShader(NULL, NULL);
+    LOGD("=== Emulator_initGraphics() END ===");
+    return result;
+}
+
 JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_initAudioBuffer
   (JNIEnv *, jclass, jint sizeInSamples)
 {
