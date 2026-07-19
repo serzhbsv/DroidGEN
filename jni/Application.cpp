@@ -391,7 +391,7 @@ int Application::loadROM(const char* filename)
     }
     LOGD("cart.rom allocated at: %p", cart.rom);
     
-    // Проверка существования файла
+    // Проверка сущест
     FILE* testFile = fopen(filename, "rb");
     if (testFile == NULL) {
         LOGE("loadROM() - file does not exist!");
@@ -419,16 +419,6 @@ int Application::loadROM(const char* filename)
     }
     strcpy(_currentRom, filename);
     
-
-
-
-
-
-
-
-
-
-
     LOGD("=== Application::loadROM() START ===");
     
     // Проверка 1: filename
@@ -453,7 +443,7 @@ int Application::loadROM(const char* filename)
     LOGD("cart.rom allocated at: %p", cart.rom);
     
     // Проверка 3: существование файла
-    FILE* testFile = fopen(filename, "rb");
+    
     if (testFile == NULL) {
         LOGE("loadROM() - file does not exist: %s", filename);
         LOGE("errno: %d", errno);
