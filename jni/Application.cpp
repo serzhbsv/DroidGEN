@@ -375,6 +375,28 @@ int Application::loadROM(const char* filename)
 {
 	LOGD("NDK:LoadingRom: %s", filename);
 
+
+    LOGD("=== Application::loadROM() START ===");
+    LOGD("filename: %s", filename ? filename : "NULL");
+    
+    if (filename == NULL || strlen(filename) == 0) {
+        LOGE("loadROM() - filename is NULL or empty!");
+        return NATIVE_ERROR;
+    }
+    
+    // Проверка, что файл существует
+    FILE* testFile = fopen(filename, "rb");
+    if (testFile == NULL) {
+        LOGE("loadROM() - file does not exist: %s", filename);
+        return NATIVE_ERROR;
+    }
+    fclose(testFile);
+    
+
+
+
+
+
 	if (_romLoaded)
 	{
 		// TODO: close genesis
