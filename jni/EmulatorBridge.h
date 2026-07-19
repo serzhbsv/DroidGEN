@@ -44,7 +44,7 @@ JNIEXPORT jint JNICALL Java_com_droidits_genesisdroid_Emulator_initAudioBuffer
  * Method:    loadRom
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_droidits_genesisdroid_Emulator_loadRom
+JNIEXPORT jint JNICALL Java_com_droidhits_genesisdroid_Emulator_loadRom
   (JNIEnv *, jclass, jstring);
 
 /*
