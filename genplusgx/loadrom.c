@@ -375,6 +375,29 @@ static void deinterleave_block(uint8 * src)
   ***************************************************************************/
 int load_rom(char *filename)
 {
+	
+    // Проверка 1: filename
+    if (filename == NULL) {
+        LOGE("load_rom() - filename is NULL!");
+        return 0;
+    }
+    
+    // Проверка 2: cart.rom
+    if (cart.rom == NULL) {
+        LOGE("load_rom() - cart.rom is NULL!");
+        return 0;
+    }
+    
+    // Проверка 3: файл существует
+    FILE* f = fopen(filename, "rb");
+    if (f == NULL) {
+        LOGE("load_rom() - cannot open file: %s", filename);
+        return 0;
+    }
+    fclose(f);
+    
+    
+	
     LOGD("load_rom() - filename: %s", filename);
     
     if (filename == NULL) {
