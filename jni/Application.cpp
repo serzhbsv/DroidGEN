@@ -1,3 +1,4 @@
+#include <errno.h>
 #define LOG_TAG "DroidGEN"
 extern "C"
 {
