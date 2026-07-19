@@ -370,6 +370,27 @@ static void deinterleave_block(uint8 * src)
   ***************************************************************************/
 int load_rom(char *filename)
 {
+    LOGD("load_rom() - filename: %s", filename);
+    
+    if (filename == NULL) {
+        LOGE("load_rom() - filename is NULL!");
+        return 0;
+    }
+    
+    // Проверка, что cart.rom выделен
+    if (cart.rom == NULL) {
+        LOGE("load_rom() - cart.rom is NULL!");
+        return 0;
+    }
+    
+    // Проверка, что файл существует
+    FILE* f = fopen(filename, "rb");
+    if (f == NULL) {
+        LOGE("load_rom() - cannot open file: %s", filename);
+        return 0;
+    }
+    fclose(f);
+    
   int i, size;
  
 #ifdef NGC

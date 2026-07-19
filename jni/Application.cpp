@@ -373,126 +373,117 @@ void Application::resetROM()
 
 int Application::loadROM(const char* filename)
 {
-	LOGD("NDK:LoadingRom: %s", filename);
-
-
     LOGD("=== Application::loadROM() START ===");
-    LOGD("filename: %s", filename ? filename : "NULL");
     
-    if (filename == NULL || strlen(filename) == 0) {
-        LOGE("loadROM() - filename is NULL or empty!");
+    // Проверка 1: filename
+    if (filename == NULL) {
+        LOGE("loadROM() - filename is NULL!");
         return NATIVE_ERROR;
     }
     
-    // Проверка, что файл существует
+    if (strlen(filename) == 0) {
+        LOGE("loadROM() - filename is empty!");
+        return NATIVE_ERROR;
+    }
+    
+    LOGD("filename: %s", filename);
+    LOGD("filename length: %zu", strlen(filename));
+    
+    // Проверка 2: cart.rom
+    if (cart.rom == NULL) {
+        LOGE("loadROM() - cart.rom is NULL!");
+        return NATIVE_ERROR;
+    }
+    LOGD("cart.rom allocated at: %p", cart.rom);
+    
+    // Проверка 3: существование файла
     FILE* testFile = fopen(filename, "rb");
     if (testFile == NULL) {
         LOGE("loadROM() - file does not exist: %s", filename);
+        LOGE("errno: %d", errno);
         return NATIVE_ERROR;
     }
     fclose(testFile);
+    LOGD("File exists and is readable");
     
-
-
-
-
-
-	if (_romLoaded)
-	{
-		// TODO: close genesis
-
-		// save sram
-		saveSRam(_sramDir);
-
-		_romLoaded = false;
-	}
-
-     /* load ROM file */
-   	if (!load_rom((char*)filename))
-   	{
-   		LOGD("Error loading rom!");
-   		return NATIVE_ERROR;
-   	}
-
-   	// store current rom
-   	strcpy(_currentRom, filename);
-
-   	// controllers options
-	config.gun_cursor[0]  = 1;
-	config.gun_cursor[1]  = 1;
-	config.invert_mouse   = 0;
-	config.s_device = 0;
-
-	LOGD("GenesisPlus Hardware: %d", system_hw);
-
-	if (system_hw == SYSTEM_MEGADRIVE || system_hw == SYSTEM_GENESIS)
-	{
-		Input.setButtonVisibility(BUTTON_INDEX_C, true);
-		Input.setButtonVisibility(BUTTON_INDEX_X, true);
-		Input.setButtonVisibility(BUTTON_INDEX_Y, true);
-		Input.setButtonVisibility(BUTTON_INDEX_Z, true);
-
-		input.system[0]       = SYSTEM_MD_GAMEPAD;
-		input.system[1]       = SYSTEM_MD_GAMEPAD;
-
-		config.input[0].padtype = DEVICE_PAD6B;
-	}
-	else if (system_hw == SYSTEM_PBC)
-	{
-		Input.setButtonVisibility(BUTTON_INDEX_C, false);
-		Input.setButtonVisibility(BUTTON_INDEX_X, false);
-		Input.setButtonVisibility(BUTTON_INDEX_Y, false);
-		Input.setButtonVisibility(BUTTON_INDEX_Z, false);
-
-		input.system[0]       = SYSTEM_MS_GAMEPAD;
-		input.system[1]       = SYSTEM_MS_GAMEPAD;
-		config.input[0].padtype = DEVICE_PAD2B;
-	}
-
-	input_init();
-
-    // hot-swap previous & current cartridge
-   	bool hotswap = config.hot_swap && cart.romsize;
-   	//cart.romsize = size;
-
-   	if(hotswap)
-	{
-   		if (system_hw == SYSTEM_PBC)
-   		{
-   			sms_cart_init();
-   			sms_cart_reset();
-   		}
-   		else
-   		{
-   			md_cart_init();
-   			md_cart_reset(1);
-   		}
-	}
-   	else
-   	{
-   		// initialize audio emulation
-   		audio_init(_sampleRate, vdp_pal ? 50.0 : 60.0);
-
-   		// system power ON
-   		system_init();
-   		system_reset();
-   	}
-
-   	// sram
-   	loadSRam(_currentRom);
-
-   	// mark video updated
-   	bitmap.viewport.changed |= 1;
-
-     /* load Cheats */
-     //CheatLoad();
-
-   	_ssize = 0;
-
+    // Проверка 4: сохранение SRAM
+    if (_romLoaded) {
+        LOGD("ROM already loaded, saving SRAM...");
+        saveSRam(_sramDir);
+        _romLoaded = false;
+    }
+    
+    // Проверка 5: вызов load_rom
+    LOGD("Calling load_rom()...");
+    if (!load_rom((char*)filename)) {
+        LOGE("load_rom() returned 0 (failed)!");
+        return NATIVE_ERROR;
+    }
+    LOGD("load_rom() succeeded!");
+    
+    // Проверка 6: копирование пути
+    LOGD("Copying filename to _currentRom...");
+    if (_currentRom == NULL) {
+        LOGE("_currentRom is NULL!");
+        return NATIVE_ERROR;
+    }
+    strcpy(_currentRom, filename);
+    LOGD("_currentRom set to: %s", _currentRom);
+    
+    // ... остальной код (настройка контроллеров и т.д.)
+    LOGD("Setting up controllers...");
+    config.gun_cursor[0]  = 1;
+    config.gun_cursor[1]  = 1;
+    config.invert_mouse   = 0;
+    config.s_device = 0;
+    
+    LOGD("System HW: %d", system_hw);
+    
+    if (system_hw == SYSTEM_MEGADRIVE || system_hw == SYSTEM_GENESIS) {
+        Input.setButtonVisibility(BUTTON_INDEX_C, true);
+        Input.setButtonVisibility(BUTTON_INDEX_X, true);
+        Input.setButtonVisibility(BUTTON_INDEX_Y, true);
+        Input.setButtonVisibility(BUTTON_INDEX_Z, true);
+        
+        input.system[0] = SYSTEM_MD_GAMEPAD;
+        input.system[1] = SYSTEM_MD_GAMEPAD;
+        config.input[0].padtype = DEVICE_PAD6B;
+    } else if (system_hw == SYSTEM_PBC) {
+        Input.setButtonVisibility(BUTTON_INDEX_C, false);
+        Input.setButtonVisibility(BUTTON_INDEX_X, false);
+        Input.setButtonVisibility(BUTTON_INDEX_Y, false);
+        Input.setButtonVisibility(BUTTON_INDEX_Z, false);
+        
+        input.system[0] = SYSTEM_MS_GAMEPAD;
+        input.system[1] = SYSTEM_MS_GAMEPAD;
+        config.input[0].padtype = DEVICE_PAD2B;
+    }
+    
+    LOGD("Calling input_init()...");
+    input_init();
+    
+    LOGD("Initializing audio...");
+    audio_init(_sampleRate, vdp_pal ? 50.0 : 60.0);
+    LOGD("Calling system_init()...");
+    system_init();
+    system_reset();
+    
+    LOGD("Loading SRAM...");
+    loadSRam(_currentRom);
+    bitmap.viewport.changed |= 1;
+    _ssize = 0;
     _romLoaded = true;
-
-     return NATIVE_OK;
+    
+    LOGD("=== Application::loadROM() SUCCESS ===");
+    return NATIVE_OK;
 }
+
+
+
+
+
+
+
 
 
 void Application::saveState(const int i)
