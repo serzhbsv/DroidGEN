@@ -375,7 +375,13 @@ static void deinterleave_block(uint8 * src)
   ***************************************************************************/
 int load_rom(char *filename)
 {
+<<<<<<< HEAD
 	
+=======
+    LOGD("=== load_rom() START ===");
+    LOGD("filename: %s", filename);
+    
+>>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
     // Проверка 1: filename
     if (filename == NULL) {
         LOGE("load_rom() - filename is NULL!");
@@ -387,14 +393,21 @@ int load_rom(char *filename)
         LOGE("load_rom() - cart.rom is NULL!");
         return 0;
     }
+<<<<<<< HEAD
     
     // Проверка 3: файл существует
+=======
+    LOGD("cart.rom: %p", cart.rom);
+    
+    // Проверка 3: файл существует и читается
+>>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
     FILE* f = fopen(filename, "rb");
     if (f == NULL) {
         LOGE("load_rom() - cannot open file: %s", filename);
         return 0;
     }
     
+<<<<<<< HEAD
     
     
 	
@@ -502,6 +515,118 @@ int load_rom(char *filename)
   }
 
   return(1);
+=======
+    // Проверка 4: размер файла
+    fseek(f, 0, SEEK_END);
+    long fileSize = ftell(f);
+    rewind(f);
+    LOGD("File size: %ld bytes", fileSize);
+    
+    if (fileSize > MAXROMSIZE) {
+        LOGE("File too large: %ld > %d", fileSize, MAXROMSIZE);
+        fclose(f);
+        return 0;
+    }
+    fclose(f);
+    
+    // === ОСНОВНОЙ КОД ЗАГРУЗКИ ===
+    int i, size;
+    
+#ifdef NGC
+    size = cart.romsize;
+#else
+uint8 *ptr;
+ptr = load_archive(filename, &size);
+if(!ptr) {
+    LOGE("load_archive() failed for: %s", filename);
+    return 0;
+}
+LOGD("load_archive() returned %d bytes at %p", size, ptr);
+
+if (size > MAXROMSIZE) {
+    LOGE("Archive too large: %d > %d", size, MAXROMSIZE);
+    free(ptr);
+    return 0;
+}
+
+memcpy(cart.rom, ptr, size);
+free(ptr);
+LOGD("memcpy() done");
+#endif
+
+    /* Minimal ROM size */
+    if (size < 0x4000) {
+        memset(cart.rom + size, 0xFF, 0x4000 - size);
+        size = 0x4000;
+    }
+
+    /* Get file extension */
+    if (!strnicmp(".sms", &filename[strlen(filename) - 4], 4)) {
+        /* Force SMS compatibility mode */
+        system_hw = SYSTEM_PBC;
+    } else {
+        /* Assume Genesis mode */
+        system_hw = SYSTEM_GENESIS;
+    }
+
+    /* Take care of 512 byte header, if present */
+    if (strncmp((char *)(cart.rom + 0x100), "SEGA", 4) && ((size / 512) & 1)) {
+        size -= 512;
+        memcpy(cart.rom, cart.rom + 512, size);
+
+        /* interleaved ROM format (.smd) */
+        if (system_hw != SYSTEM_PBC) {
+            for (i = 0; i < (size / 0x4000); i++) {
+                deinterleave_block(cart.rom + (i * 0x4000));
+            }
+        }
+    }
+
+    /* max. 10 MBytes supported */
+    if (size > MAXROMSIZE) size = MAXROMSIZE;
+    cart.romsize = size;
+
+    /* clear unused ROM space */
+    memset(cart.rom + size, 0xff, MAXROMSIZE - size);
+
+    /* get infos from ROM header */
+    getrominfo((char *)cart.rom);
+
+    /* detect console region */
+    region_autodetect();
+
+    /* Genesis ROM specific */
+    if (system_hw != SYSTEM_PBC) {
+#ifdef LSB_FIRST
+        /* Byteswap ROM */
+        uint8 temp;
+        for(i = 0; i < size; i += 2) {
+            temp = cart.rom[i];
+            cart.rom[i] = cart.rom[i+1];
+            cart.rom[i+1] = temp;
+        }
+#endif
+
+        /* byteswapped RADICA dumps (from Haze) */
+        if (((strstr(rominfo.product, "-K0101") != NULL) && (rominfo.checksum == 0xf424)) ||
+            ((strstr(rominfo.product, "-K0109") != NULL) && (rominfo.checksum == 0x4f10))) {
+            uint8 temp;
+            for(i = 0; i < size; i += 2) {
+                temp = cart.rom[i];
+                cart.rom[i] = cart.rom[i+1];
+                cart.rom[i+1] = temp;
+            }
+        }
+
+        /* PICO hardware */
+        if (strstr(rominfo.consoletype, "SEGA PICO") != NULL) {
+            system_hw = SYSTEM_PICO;
+        }
+    }
+
+    LOGD("=== load_rom() SUCCESS ===");
+    return 1;
+>>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
 }
 
 /****************************************************************************

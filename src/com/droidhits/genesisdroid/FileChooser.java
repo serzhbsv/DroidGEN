@@ -141,7 +141,34 @@ public class FileChooser extends Activity //implements DecompressListener
      
      private void fill(File f)
      {
+<<<<<<< HEAD
          File[]dirs = f.listFiles();
+=======
+		 
+    Log.d("FileChooser", "=== fill() START ===");
+    Log.d("FileChooser", "Current dir: " + f.getAbsolutePath());
+    
+    File[] dirs = f.listFiles();
+    if (dirs == null || dirs.length == 0) {
+        Log.e("FileChooser", "No files or directories in: " + f.getAbsolutePath());
+        return;
+    }
+    
+    for (File ff : dirs) {
+        Log.d("FileChooser", "Found: " + ff.getName() + " isDirectory: " + ff.isDirectory());
+    }
+
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+         
+>>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
           this.setTitle("Current Dir: "+f.getAbsolutePath());
           List<Option>dir = new ArrayList<Option>();
           List<Option>fls = new ArrayList<Option>();

@@ -1,2 +1,0 @@
-F:\DeepSeek\Cpp\DroidGEN\jni\Android.mk
-F:\DeepSeek\Cpp\DroidGEN\jni\Application.mk
