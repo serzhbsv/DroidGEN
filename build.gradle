@@ -33,11 +33,7 @@ android {
         
 		// ДОБАВЬТЕ ЭТОТ БЛОК, ЧТОБЫ СОБИРАТЬ ТОЛЬКО ДЛЯ arm64-v8a
 ndk {
-<<<<<<< HEAD
-    abiFilters  'arm64-v8a', 'x86_64'
-=======
     abiFilters  'arm64-v8a'
->>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
 }
         
 		externalNativeBuild {
