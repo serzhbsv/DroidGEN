@@ -86,8 +86,4 @@ ndk {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-<<<<<<< HEAD
-=======
-
->>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
 }
