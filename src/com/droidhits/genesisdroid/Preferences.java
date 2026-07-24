@@ -90,11 +90,7 @@ public class Preferences
      {
           SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
           String dir = prefs.getString(PREF_DIR_STATES, Environment.getExternalStorageDirectory() + DEFAULT_DIR_STATES);
-<<<<<<< HEAD
           
-=======
-          Log.d("DroidGEN", "ROM dir: " + dir);
->>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
           return dir;
      }
      

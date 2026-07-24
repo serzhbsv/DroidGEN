@@ -27,13 +27,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-<<<<<<< HEAD
-=======
-import android.Manifest;
-import android.os.Build;
-import android.provider.Settings;
-import android.net.Uri;
->>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
 
 
 public class MainActivity extends Activity
@@ -48,35 +41,6 @@ public class MainActivity extends Activity
      public void onCreate(Bundle savedInstanceState)
      {
           Log.d(LOG_TAG, "onCreate()");
-<<<<<<< HEAD
-=======
-		   // Проверка и запрос разрешений
-// В MainActivity.java
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) 
-            != PackageManager.PERMISSION_GRANTED) {
-        requestPermissions(new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        }, 100);
-    }
-}
-
-
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-    if (!Environment.isExternalStorageManager()) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivity(intent);
-    }
-}
-
-
-
-
-
-
->>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
               // 1. СНАЧАЛА установить пути
     Emulator.setPaths(
         getApplicationContext().getFilesDir().getAbsolutePath(),
@@ -419,26 +383,5 @@ if (result != 0) {
           }
           
           super.onActivityResult(requestCode, resultCode, data);          
-<<<<<<< HEAD
      }                      
-=======
-     }
-
-
-
-@Override
-public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == 100) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d("DroidGEN", "Permission granted!");
-        }
-    }
-}
-
-
-
-
-	 
->>>>>>> f0a970d (Добовляем логи в loadrom.c и добавели запрос разрешений для apk)
 }
